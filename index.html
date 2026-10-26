@@ -138,7 +138,7 @@ tr.expand-row{background:var(--chip)}
   <nav class="sitenav" aria-label="Site navigation">
     <a class="navlink" id="fwd" href="free_agents.html">Free agents &rarr;</a>
     <span class="sep">&middot;</span>
-    <a class="navlink" href="road_to_260.html">Road to 260 &rarr;</a>
+    <a class="navlink" id="fwd260" href="road_to_260.html">Road to 260 &rarr;</a>
   </nav>
   <h1>Roster Quick Reference</h1>
   <p class="sub" id="sub"></p>
@@ -365,6 +365,7 @@ function renderNotes(){
 function render(){
   const fwdHref=location.protocol==='file:'?'free_agents.html':'free-agents.html';
   $('#fwd').setAttribute('href',fwdHref);
+  $('#fwd260').setAttribute('href',location.protocol==='file:'?'road_to_260.html':'road-to-260.html');
   const list=compute();
   $('#wk').textContent=DATA.week.label; $('#dates').textContent=DATA.week.dates;
   $('#sub').textContent=`${DATA.meta.league} · ${DATA.meta.asOf}`;

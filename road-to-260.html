@@ -118,7 +118,7 @@ body{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial
   <nav class="sitenav" aria-label="Site navigation">
     <a class="navlink" id="back" href="roster_quickref.html">&larr; Roster</a>
     <span class="sep">&middot;</span>
-    <a class="navlink" href="free_agents.html">&larr; Free agents</a>
+    <a class="navlink" id="fwdFA" href="free_agents.html">&larr; Free agents</a>
   </nav>
   <div class="top">
     <div>
@@ -147,6 +147,7 @@ const f1=x=>Number(x).toFixed(1);
 function render(){
   const D=DATA, T=D.meta.target, slots=D.slots;
   $('#back').setAttribute('href',location.protocol==='file:'?'roster_quickref.html':'index.html');
+  $('#fwdFA').setAttribute('href',location.protocol==='file:'?'free_agents.html':'free-agents.html');
   $('#wk').textContent=`${D.week.label} \u00B7 ${D.week.dates}`;
   $('#lede').textContent=`Best projected total (Sleeper's numbers, no uplift) and lock target with +${D.meta.sdExtra} SD per slot. ${D.meta.league}, updated ${D.meta.asOf}.`;
   if(D.meta.prototype){$('#banner').hidden=false;$('#banner').textContent='Layout preview with sample numbers and made-up players. The real page is built from my Sleeper roster and Sleeper projections.';}

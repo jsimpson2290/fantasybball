@@ -142,7 +142,7 @@ ol.watch li{margin:7px 0;max-width:84ch;font-size:14.5px}
   <nav class="sitenav" aria-label="Site navigation">
     <a class="navlink" id="back" href="roster_quickref.html">&larr; Roster</a>
     <span class="sep">&middot;</span>
-    <a class="navlink" href="road_to_260.html">Road to 260 &rarr;</a>
+    <a class="navlink" id="fwd260" href="road_to_260.html">Road to 260 &rarr;</a>
   </nav>
   <h1>Free Agent Pickups</h1>
   <p class="sub" id="sub"></p>
@@ -173,6 +173,7 @@ function render(){
   $('#sub').textContent=`${D.meta.league}. Updated ${D.meta.asOf}. ${D.week.label} (${D.week.dates}). Free agents in my Sleeper league, ranked by a composite of lockable games, minutes per game, and injury-opportunity context. Click a player's name to see their 2026-27 game log.`;
   if(D.meta.prototype){$('#banner').hidden=false;$('#banner').textContent='Layout preview with sample numbers and made-up players. The real page is built from my Sleeper league and the NBA box scores.';}
   const href=location.protocol==='file:'?'roster_quickref.html':'index.html'; $('#back').setAttribute('href',href);
+  $('#fwd260').setAttribute('href',location.protocol==='file:'?'road_to_260.html':'road-to-260.html');
   $('#drops').innerHTML=`<h2>If I drop one of these</h2><p class="meta">The drop-first pair from the roster ranking. A pickup has to beat the player he replaces on expected points and on lockable games, and he has to fit a lineup slot once the swap is made${(D.meta.lineup&&D.meta.lineup.slots)?` (my slots: ${D.meta.lineup.slots.join(', ')}; G takes a PG or SG, F takes an SF or PF, UTIL takes anyone)`:''}.</p>
    <div class="drops">`+(D.drop||[]).map(d=>`<div class="drop"><b>${esc(d.name)}</b><div class="meta">Expected ${f1(d.mu)} | lockable games ${d.lock.toFixed(2)} | ${d.g} games this week</div></div>`).join('')+`</div>
    <p class="meta" style="margin-top:10px">${(fas.filter(x=>(x.beats||[]).length)).length} of the ${fas.length} listed can replace at least one of them and beat him on both measures (green chips). The rest are watch-list names, not upgrades yet.</p>`;
