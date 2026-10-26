@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Roster Quick Reference</title>
+<style>
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#142030; --muted:#5a6b7c; --line:#dde3ea;
+  --curve:#3a6fb0; --curve-fill:rgba(58,111,176,.16); --lock:#1f9d5c; --lock-fill:rgba(31,157,92,.28);
+  --ceil:#d4642a; --hist:rgba(20,32,48,.13); --chip:#eaeff5;
+  --core:#1f9d5c; --solid:#3a6fb0; --watch:#c58a12; --drop:#c8402f; --ir:#6b7a8a;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#0e141b; --surface:#16202b; --ink:#e8eef5; --muted:#93a4b6; --line:#263444;
+    --curve:#6fa3e6; --curve-fill:rgba(111,163,230,.2); --lock:#3ccf86; --lock-fill:rgba(60,207,134,.3);
+    --ceil:#ff8c52; --hist:rgba(232,238,245,.16); --chip:#1f2c3a; }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:26px;margin:0 0 2px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 16px;max-width:70ch}
+.banner{background:#fff6dd;border:1px solid #ecd48a;color:#5b4608;padding:10px 12px;border-radius:8px;margin:0 0 16px;font-size:14px}
+@media (prefers-color-scheme:dark){.banner{background:#33290d;border-color:#6b5716;color:#f1dca0}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.pager{display:flex;align-items:center;gap:14px;margin:6px 0 14px}
+.pager .wk{font-weight:700;font-size:18px}
+.pager .arrow{width:30px;height:30px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--muted);background:var(--surface)}
+.pager .dates{color:var(--muted)}
+.gpt{display:grid;grid-template-columns:44px 1fr;gap:6px 12px;align-items:start}
+.gpt .n{font-size:30px;font-weight:800;line-height:1;text-align:right;color:var(--ink)}
+.gpt .chips{display:flex;flex-wrap:wrap;gap:6px;min-height:30px;align-items:center}
+.chip{background:var(--chip);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:600}
+.chip.none{background:transparent;color:var(--muted);font-weight:400;padding-left:0}
+.controls{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
+.controls label{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.controls select,.controls input[type=range]{font:inherit;color:var(--ink)}
+.controls select{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.controls output{min-width:2ch;font-weight:700;color:var(--ink)}
+.howto{font-size:13.5px;color:var(--muted);margin:10px 0 0}
+.howto b{color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{padding:9px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:600;color:var(--muted);font-size:13px;position:sticky;top:0;background:var(--surface)}
+th:nth-child(2),td:nth-child(2){text-align:left}
+td.rk{color:var(--muted);width:32px}
+tr.row{cursor:pointer}
+tr.row:hover td{background:var(--chip)}
+.tm{display:inline-block;font-size:11.5px;font-weight:700;background:var(--chip);border-radius:4px;padding:1px 6px;margin-left:6px;color:var(--muted)}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-weight:700;font-size:12.5px;color:#fff}
+.pill.Core{background:var(--core)}.pill.Solid{background:var(--solid)}.pill.Watch{background:var(--watch)}.pill.Drop{background:var(--drop)}.pill.IR{background:var(--ir)}.pill.Protect{background:#7a5bd0}
+.tablewrap{overflow-x:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px 14px}
+.pcard header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.pcard h3{margin:0;font-size:17px}
+.pcard .meta{color:var(--muted);font-size:13px}
+.q{font-size:12px;color:var(--muted);margin:2px 0 4px}
+svg{width:100%;height:auto;display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px;margin:6px 0 8px}
+.stats div{font-size:12px;color:var(--muted)}
+.stats b{display:block;font-size:17px;color:var(--ink)}
+.stats b.ceil{color:var(--ceil)}.stats b.lock{color:var(--lock)}
+ul.mon{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink)}
+ul.mon li{margin:2px 0}
+.foot{color:var(--muted);font-size:12.5px;margin-top:18px}
+.notes h2{font-size:20px;margin:0 0 4px}
+.notes h3{font-size:15.5px;margin:18px 0 4px}
+.notes p,.notes li{font-size:14px;max-width:78ch;margin:4px 0}
+.notes ul{padding-left:20px;margin:4px 0}
+.notes code{background:var(--chip);border-radius:4px;padding:1px 6px;font-size:13px}
+.notes table{width:auto;font-size:13.5px;margin:8px 0}
+.notes th,.notes td{padding:5px 12px;text-align:right;border-bottom:1px solid var(--line);position:static}
+.notes th:first-child,.notes td:first-child{text-align:left}
+.notes .eq{background:var(--chip);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:13.5px;max-width:78ch}
+:focus-visible{outline:2px solid var(--curve);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Roster Quick Reference</h1>
+  <p class="sub" id="sub"></p>
+  <div class="banner" id="banner" hidden></div>
+
+  <div class="pager" aria-label="Week">
+    <span class="arrow" aria-hidden="true">&larr;</span>
+    <span class="wk" id="wk"></span><span class="dates" id="dates"></span>
+    <span class="arrow" aria-hidden="true">&rarr;</span>
+  </div>
+
+  <div class="card" id="gpt"><b>Games this week</b></div>
+
+  <div class="card">
+    <div class="controls">
+      <label>Lock bar
+        <select id="barMode"><option value="tier">Tier bars (30 / 26)</option><option value="custom">Same bar for everyone</option></select>
+      </label>
+      <label id="customWrap" hidden>Bar <input id="customBar" type="range" min="18" max="45" value="28" aria-label="Custom lock bar"><output id="customOut">28</output></label>
+      <label>Ceiling
+        <select id="sdSel"><option value="1">mean + 1 SD</option><option value="1.5">mean + 1.5 SD</option><option value="2">mean + 2 SD</option></select>
+      </label>
+    </div>
+    <p class="howto"><b>How to read the curves:</b> the curve is where this player's game scores should fall this season. The <b style="color:var(--lock)">green area</b> is the share of games that clear the lock bar. The <b style="color:var(--ceil)">orange line</b> is his realistic ceiling. Diamonds are this season's games. Grey bars (when shown) are last season's actual games.</p>
+  </div>
+
+  <div class="card" id="watch" hidden></div>
+
+  <div class="card tablewrap">
+    <table>
+      <thead><tr><th></th><th>Player</th><th>Games</th><th>Expected</th><th>Ceiling</th><th>Bar</th><th>Per game at bar</th><th>Lockable games</th><th>Rosterability</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="grid" id="cards"></div>
+
+  <section class="card notes" id="notes"></section>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+/*DATA_START*/
+const DATA = {"meta": {"prototype": false, "league": "Bill Liambeerme", "asOf": "Oct 26, 2026", "sdAssumed": 6.3, "k": 10, "method": {"scoring": {"PTS": 0.5, "REB": 1, "AST": 1, "STL": 2, "BLK": 2, "TO": -1, "TPM": 0.5, "DD": 3, "TD": 3}, "wLast": 0.5, "k": 10, "kProtected": 20, "minEmpirical": 30, "minGamesLast": 20, "sdAssumed": 6.3, "minuteDamp": 0.5, "tierBars": {"elite": 40, "mid": 30, "standard": 26}, "core": 5, "solid": 4, "dropN": 2, "ceilingSD": 2}}, "week": {"label": "Week 1", "dates": "Oct 26 - Nov 1", "watch": ["Flagg shoulder (GTD) â€” 3 DAL games. If he misses one, lockable drops from 0.86 to 0.57 and he falls behind Hart. Check status before each lock decision.", "Dybantsa ankle â€” WAS plays Oct 26 @ CHA tonight. If he suits up, start the 5-game review clock (target: 28+ min, rising point total).", "Kuminga minutes at MIN â€” sliding 30â†’27â†’26 in 3 games. His role depends on DiVincenzo's Achilles; check MIN injury report before locking.", "Duren return ~Nov 9 â€” Reed (#10) is the drop the moment Duren activates. Do not lock Reed in Week 2 if return date firms up.", "Achiuwa role at SAC â€” Oct 25 was 29 FP (double-double + steals); 3-game avg 21.3 vs projection 13.6. Keegan Murray's ankle is what keeps this role open."]}, "players": [{"name": "Alperen Sengun", "short": "Sengun", "team": "HOU", "tier": "mid", "bar": 30, "g": 4, "proj": 29.5, "mu": 28.68, "status": "active", "note": "", "quality": "full", "now": [26.5, 28.5, 28.0], "mon": ["Last season: 72 games, average 28.5, SD 10.4, mean + 2 SD 49.3; 42 games at 26+, 30 at 30+.", "This season: 3 games, average 27.7, 33.0 minutes per game.", "Minutes and double-double rate drive his ceiling; confirm both in the logs.", "Houston plays 4 games this week."], "last": [45.0, 25.5, 22.5, 32.5, 32.5, 32.0, 34.0, 30.0, 28.0, 29.0, 48.5, 37.0, 34.0, 16.0, 18.0, 21.0, 22.5, 52.0, 35.0, 37.0, 44.5, 42.0, 13.0, 27.0, 33.5, 22.0, 27.0, 1.0, 28.0, 31.5, 25.0, 32.5, 30.5, 35.5, 30.0, 14.5, 28.5, 32.5, 25.5, 29.0, 38.5, 21.5, 18.5, 49.0, 20.5, 27.0, 21.5, 20.5, 29.0, 51.5, 18.0, 16.5, 30.0, 19.5, 18.5, 12.0, 23.0, 14.0, 31.0, 27.5, 24.5, 52.0, 31.0, 27.0, 55.5, 25.0, 32.5, 15.5, 27.5, 23.0, 19.0, 24.0]}, {"name": "Cooper Flagg", "short": "Flagg", "team": "DAL", "tier": "mid", "bar": 30, "g": 3, "proj": 27.0, "mu": 25.83, "status": "GTD", "note": "Shoulder, questionable", "quality": "full", "now": [27.5, 24.0], "mon": ["Last season: 70 games, average 24.7, SD 9.0, mean + 2 SD 42.8; 32 games at 26+, 18 at 30+.", "This season: 2 games, average 25.8, 25.0 minutes per game.", "Shoulder: check status before each lock decision.", "Rookie year benchmark: about 24 FP per game after a slow start."], "last": [17.0, 20.0, 22.0, 7.0, 24.5, 22.0, 12.0, 29.5, 16.5, 19.0, 31.5, 27.5, 11.0, 30.0, 10.5, 28.5, 17.5, 17.0, 33.0, 24.5, 26.5, 20.0, 8.0, 26.0, 28.0, 36.5, 36.5, 18.0, 22.5, 38.5, 26.0, 19.0, 25.0, 20.0, 22.0, 26.0, 40.5, 7.5, 32.5, 7.0, 17.5, 25.0, 25.5, 42.0, 37.5, 37.0, 34.0, 14.0, 19.5, 28.5, 21.0, 29.0, 25.5, 20.5, 19.0, 34.0, 27.5, 21.5, 36.0, 27.0, 34.5, 22.0, 13.0, 30.5, 44.5, 44.5, 25.0, 27.5, 27.0, 12.0]}, {"name": "James Harden", "short": "Harden", "team": "CLE", "tier": "mid", "bar": 30, "g": 4, "proj": 25.5, "mu": 24.62, "status": "active", "note": "", "quality": "full", "now": [13.5, 21.5], "mon": ["Last season: 70 games, average 26.6, SD 8.5, mean + 2 SD 43.6; 37 games at 26+, 22 at 30+.", "This season: 2 games, average 17.5, 33.0 minutes per game.", "Turnovers cost 1 each here; watch his TO per game."], "last": [22.5, 29.5, 32.0, 16.5, 36.0, 27.5, 27.0, 20.5, 45.5, 23.0, 57.5, 35.0, 28.0, 30.0, 42.5, 16.5, 29.0, 33.5, 32.5, 6.0, 34.0, 17.5, 34.5, 25.0, 20.5, 30.5, 26.0, 23.5, 23.5, 21.0, 19.5, 27.5, 24.5, 27.0, 25.0, 41.5, 23.0, 31.5, 35.0, 18.5, 27.0, 24.0, 31.5, 26.5, 23.0, 36.0, 21.0, 27.5, 22.0, 24.5, 15.0, 25.0, 17.0, 28.0, 22.0, 26.5, 22.0, 15.0, 27.5, 38.5, 33.0, 27.0, 23.5, 34.5, 33.0, 9.5, 14.0, 33.5, 23.5, 11.0]}, {"name": "Jalen Duren", "short": "Duren", "team": "DET", "tier": "mid", "bar": 30, "g": 3, "proj": 25.5, "mu": 24.4, "status": "IR", "note": "Hamstring, out until about Nov 9", "quality": "full", "now": [24.0, 14.0], "mon": ["Last season: 70 games, average 25.5, SD 8.7, mean + 2 SD 42.8; 36 games at 26+, 24 at 30+.", "This season: 2 games, average 19.0, 19.0 minutes per game.", "Hamstring: re-evaluation around Nov 9.", "When he returns, Reed is the drop."], "last": [19.5, 12.0, 34.0, 15.0, 25.5, 35.5, 21.0, 40.0, 34.0, 35.5, 28.5, 35.5, 27.0, 17.5, 22.5, 23.0, 30.0, 21.5, 14.0, 13.0, 29.0, 20.0, 13.0, 28.5, 26.5, 34.0, 34.5, 5.5, 29.0, 22.0, 12.0, 34.0, 20.5, 20.0, 35.0, 14.0, 22.0, 17.0, 32.5, 30.5, 30.5, 27.5, 3.0, 15.5, 33.0, 31.5, 36.5, 46.5, 27.0, 29.0, 11.5, 34.5, 19.0, 27.0, 24.0, 34.0, 23.0, 35.0, 29.0, 18.5, 24.0, 33.0, 40.0, 25.0, 26.5, 33.0, 17.0, 20.0, 23.5, 21.0]}, {"name": "Josh Hart", "short": "Hart", "team": "NYK", "tier": "standard", "bar": 26, "g": 3, "proj": 22.5, "mu": 21.98, "status": "active", "note": "", "quality": "full", "now": [20.0, 32.0, 19.0], "mon": ["Last season: 66 games, average 20.5, SD 7.8, mean + 2 SD 36.1; 17 games at 26+, 11 at 30+.", "This season: 3 games, average 23.7, 33.7 minutes per game.", "Rebounds and assists suit this format; confirm minutes."], "last": [18.0, 12.0, 12.0, 1.0, 18.5, 24.0, 19.0, 16.0, 19.5, 11.5, 32.5, 21.0, 30.5, 11.5, 30.0, 32.0, 37.5, 36.0, 22.5, 26.0, 16.0, 32.0, 23.5, 23.0, 18.0, 30.0, 30.5, 15.5, 21.5, 16.0, 16.5, 12.0, 18.0, 29.5, 18.5, 26.0, 25.5, 19.5, 16.5, 10.0, 18.5, 39.5, 20.5, 11.5, 11.0, 18.0, 14.0, 20.0, 26.5, 28.0, 22.0, 16.0, 15.0, 22.5, 20.0, 33.0, 21.5, 15.0, 29.0, 22.0, 11.0, 14.0, 17.5, 7.0, 18.5, 9.5]}, {"name": "Jaylen Brown", "short": "Brown", "team": "PHI", "tier": "standard", "bar": 26, "g": 3, "proj": 22.2, "mu": 24.2, "status": "active", "note": "", "quality": "full", "now": [26.5, 21.0, 26.0, 18.0], "mon": ["Last season: 71 games, average 27.3, SD 7.5, mean + 2 SD 42.3; 44 games at 26+, 28 at 30+.", "This season: 4 games, average 22.9, 37.0 minutes per game.", "Confirmed PHI (traded from BOS); 35-40 min per game, secure role.", "Scoring-heavy; points are only 0.5 each here."], "last": [21.5, 17.0, 29.0, 16.0, 28.0, 26.0, 10.0, 25.0, 29.5, 26.5, 20.0, 21.5, 20.5, 41.0, 18.0, 26.5, 31.5, 38.5, 44.0, 35.0, 28.0, 31.5, 30.5, 18.0, 36.5, 29.0, 31.5, 27.0, 24.5, 33.0, 27.0, 34.0, 16.5, 24.5, 24.0, 26.0, 16.5, 32.5, 31.0, 34.5, 43.5, 32.5, 29.5, 19.5, 33.0, 33.5, 19.0, 21.0, 19.0, 43.5, 33.5, 31.0, 36.0, 25.5, 28.5, 28.0, 25.0, 13.0, 30.5, 14.0, 34.5, 26.5, 27.0, 23.5, 31.0, 34.0, 32.5, 23.0, 21.5, 30.0, 11.5]}, {"name": "Desmond Bane", "short": "Bane", "team": "ORL", "tier": "standard", "bar": 26, "g": 3, "proj": 21.6, "mu": 19.63, "status": "active", "note": "", "quality": "full", "now": [19.5, 4.0, 22.0], "mon": ["Last season: 82 games, average 20.3, SD 6.4, mean + 2 SD 33.2; 16 games at 26+, 11 at 30+.", "This season: 3 games, average 15.2, 31.7 minutes per game.", "Usage rises if Franz Wagner is out.", "Non-scoring stats are thin."], "last": [20.0, 17.0, 13.0, 17.0, 12.5, 11.5, 12.0, 9.5, 30.0, 14.5, 18.5, 23.5, 15.0, 23.0, 30.5, 21.0, 23.0, 17.5, 18.0, 32.5, 31.0, 16.0, 6.0, 21.0, 33.5, 22.0, 16.0, 25.5, 20.0, 30.5, 22.5, 18.0, 20.5, 20.5, 19.5, 33.0, 9.0, 11.0, 19.5, 24.0, 17.0, 17.0, 20.0, 19.0, 19.0, 22.0, 20.5, 21.0, 12.0, 25.0, 16.0, 15.5, 28.5, 22.0, 30.5, 29.0, 20.0, 31.0, 20.0, 20.0, 17.5, 22.0, 28.5, 32.5, 24.0, 18.0, 17.5, 16.0, 22.5, 18.5, 22.0, 21.0, 17.0, 11.5, 21.5, 10.0, 32.0, 27.0, 27.5, 17.5, 9.0, 11.5]}, {"name": "Immanuel Quickley", "short": "Quickley", "team": "TOR", "tier": "standard", "bar": 26, "g": 3, "proj": 21.5, "mu": 20.73, "status": "active", "note": "", "quality": "full", "now": [28.5, 12.0, 16.0], "mon": ["Last season: 70 games, average 21.1, SD 6.3, mean + 2 SD 33.6; 17 games at 26+, 4 at 30+.", "This season: 3 games, average 18.8, 28.3 minutes per game.", "His mean + 2 SD ceiling fits the 30 tier; consider moving his bar up.", "Revisit at 10 games."], "last": [17.5, 27.0, 20.5, 24.5, 16.5, 11.0, 10.5, 22.5, 25.5, 24.5, 29.5, 20.0, 15.0, 27.0, 27.0, 23.0, 20.0, 19.0, 22.0, 25.5, 19.5, 25.0, 12.5, 25.5, 12.5, 16.0, 20.5, 16.0, 27.0, 23.5, 28.5, 24.0, 11.0, 22.0, 18.5, 12.5, 20.0, 30.5, 29.0, 17.0, 16.0, 39.5, 25.5, 29.0, 33.5, 10.0, 21.5, 25.0, 27.5, 22.5, 20.0, 18.0, 15.0, 31.5, 15.5, 15.5, 29.5, 28.0, 20.0, 21.0, 17.5, 26.0, 14.0, 16.5, 19.0, 26.0, 13.0, 14.0, 16.0, 12.0]}, {"name": "Jabari Smith Jr.", "short": "J. Smith Jr.", "team": "HOU", "tier": "standard", "bar": 26, "g": 4, "proj": 20.1, "mu": 20.13, "status": "active", "note": "", "quality": "full", "now": [26.0, 16.0, 18.0], "mon": ["Last season: 77 games, average 20.2, SD 5.8, mean + 2 SD 31.9; 16 games at 26+, 6 at 30+.", "This season: 3 games, average 20.0, 34.3 minutes per game.", "30-point opener (4 threes in 36 minutes); confirm rebounds."], "last": [16.0, 17.0, 14.0, 30.5, 21.5, 12.0, 13.5, 17.5, 21.5, 21.0, 22.0, 19.5, 30.0, 23.5, 16.5, 14.5, 15.5, 19.0, 10.5, 26.0, 25.0, 27.0, 19.5, 26.5, 22.0, 12.0, 22.0, 22.0, 30.0, 18.0, 16.0, 21.0, 10.5, 24.5, 13.5, 17.0, 25.0, 18.0, 28.5, 16.5, 15.0, 28.0, 19.0, 14.0, 32.0, 27.0, 18.0, 16.0, 23.0, 29.5, 26.5, 22.0, 20.5, 20.5, 35.5, 13.0, 9.0, 13.5, 17.0, 22.0, 16.0, 20.5, 21.0, 19.5, 26.0, 18.5, 7.5, 26.0, 31.5, 23.0, 18.0, 20.0, 17.0, 22.0, 21.5, 14.0, 20.0]}, {"name": "P.J. Washington", "short": "Washington", "team": "DAL", "tier": "standard", "bar": 26, "g": 3, "proj": 19.9, "mu": 19.19, "status": "active", "note": "", "quality": "full", "now": [10.0, 31.0, 12.0], "mon": ["Last season: 56 games, average 19.4, SD 7.2, mean + 2 SD 33.7; 10 games at 26+, 4 at 30+.", "This season: 3 games, average 17.7, 33.3 minutes per game.", "Usage rises if Flagg sits."], "last": [15.5, 18.0, 21.0, 23.5, 18.5, 17.0, 37.0, 25.0, 17.0, 23.0, 17.5, 7.0, 19.0, 16.0, 22.5, 26.5, 24.0, 26.0, 24.0, 26.0, 16.0, 30.0, 25.0, 20.0, 16.0, 26.0, 20.5, 14.5, 18.0, 5.0, 14.0, 24.0, 7.0, 20.5, 24.5, 8.5, 16.0, 11.5, 15.5, 28.0, 26.0, 13.0, 10.0, 22.5, 12.0, 15.5, 10.5, 21.0, 39.5, 22.0, 23.5, 20.0, 15.5, 31.0, 7.0, 13.0]}, {"name": "Jonathan Kuminga", "short": "Kuminga", "team": "MIN", "tier": "standard", "bar": 26, "g": 4, "proj": 17.7, "mu": 17.46, "status": "active", "note": "", "quality": "full", "now": [20.0, 21.5, 17.0], "mon": ["Last season: 36 games, average 14.5, SD 6.3, mean + 2 SD 27.2; 2 games at 26+, 0 at 30+.", "This season: 3 games, average 19.5, 27.7 minutes per game.", "Now a starter, but minutes slid 30, 27, 26.", "DiVincenzo's Achilles is what keeps this role open."], "last": [25.5, 14.5, 19.5, 28.5, 11.0, 22.0, 16.0, 9.5, 20.0, 13.0, 11.5, 10.5, 3.0, 7.0, 12.5, 10.0, 13.0, 5.0, 17.5, 12.0, 28.0, 22.0, 21.5, 10.0, 10.5, 18.0, 7.0, 20.0, 10.5, 7.5, 15.0, 9.5, 13.5, 10.5, 21.0, 17.5]}, {"name": "Paul Reed", "short": "Reed", "team": "DET", "tier": "standard", "bar": 26, "g": 3, "proj": 15.9, "mu": 16.65, "status": "active", "note": "", "quality": "full", "now": [11.0, 27.5, 17.0], "mon": ["Last season: 65 games, average 12.6, SD 8.8, mean + 2 SD 30.2; 5 games at 26+, 4 at 30+.", "This season: 3 games, average 18.5, 22.0 minutes per game.", "Starting C only while Duren is out (about Nov 9)."], "last": [3.0, 19.0, 4.0, 1.0, 5.0, 0.0, 15.0, 11.0, 17.0, 43.0, 23.0, 11.5, 6.0, 2.0, 3.5, 22.0, 10.0, 15.0, 4.0, 5.0, 1.0, 0.0, 7.0, 5.5, 4.5, 15.5, 17.0, 14.0, 19.0, 23.0, 6.5, 5.0, 3.0, 7.0, 7.5, 20.5, 15.5, 31.5, 26.0, 19.5, 15.0, 17.0, 11.0, 9.5, 8.0, 16.5, 7.0, 9.0, 4.0, 12.0, 10.0, 18.5, 22.5, 11.0, 8.0, 9.0, 19.0, 33.0, 15.0, 10.0, 17.0, 14.0, 11.0, 8.0, 34.0]}, {"name": "Ayo Dosunmu", "short": "Dosunmu", "team": "MIN", "tier": "standard", "bar": 26, "g": 4, "proj": 15.0, "mu": 15.89, "status": "active", "note": "", "quality": "full", "now": [15.5, 31.5, 6.0], "mon": ["Last season: 69 games, average 16.3, SD 7.5, mean + 2 SD 31.2; 6 games at 26+, 3 at 30+.", "This season: 3 games, average 17.7, 26.3 minutes per game.", "First guard off the bench; Oct 23 cleared the 26 bar."], "last": [15.0, 10.0, 17.5, 7.5, 25.5, 10.0, 10.5, 23.5, 12.0, 13.0, 18.0, 14.0, 19.0, 10.5, 17.0, 6.0, 16.0, 19.0, 18.0, 10.0, 11.0, 7.0, 6.0, 13.0, 11.5, 18.0, 19.0, 18.5, 17.0, 19.0, 19.0, 28.5, 11.0, 20.5, 13.0, 22.0, 23.0, 14.0, 7.0, 19.0, 16.5, 20.0, 33.0, 9.5, 25.0, 12.0, 18.5, 15.0, 8.0, 15.0, 6.5, 10.5, 12.0, 13.0, 17.0, 5.0, 7.5, 20.0, 13.0, 15.0, 33.0, 29.0, 27.5, 47.5, 21.5, 22.5, 11.0, 19.5, 11.0]}, {"name": "AJ Dybantsa", "short": "Dybantsa", "team": "WAS", "tier": "standard", "bar": 26, "g": 3, "proj": 14.3, "mu": 14.3, "status": "GTD", "note": "Ankle sprain, no games played yet", "quality": "projection", "now": [], "mon": ["Mild ankle sprain; Monday at Charlotte is the next chance to play.", "Review after 5 healthy games: minutes 28+ and a rising point total.", "Repeat sprains are common; expect tape and a possible minutes limit."], "protect": "No. 1 pick; judge after 5 healthy games"}, {"name": "Precious Achiuwa", "short": "Achiuwa", "team": "SAC", "tier": "standard", "bar": 26, "g": 3, "proj": 13.6, "mu": 17.3, "status": "active", "note": "", "quality": "full", "now": [18.0, 17.0, 29.0], "mon": ["Last season: 73 games, average 16.1, SD 9.2, mean + 2 SD 34.5; 10 games at 26+, 8 at 30+.", "This season: 3 games, average 21.3, 31.3 minutes per game.", "Role depends on Keegan Murray's recurring ankle.", "Oct 25 was a double-double with 5 steals plus blocks (line incomplete)."], "last": [6.0, 8.0, 20.0, 10.0, 12.0, 13.0, 1.5, 20.0, 8.0, 9.5, 15.0, 17.5, 12.0, 13.0, 12.0, 14.5, 20.5, 8.0, 17.0, 9.0, 3.0, 6.5, 32.0, 17.5, 8.5, 7.0, 18.0, 8.5, 9.0, 17.0, 5.5, 20.0, 15.0, 36.0, 18.5, 8.0, 9.0, 15.0, 11.0, 6.0, 10.0, 22.0, 4.0, 6.0, 10.0, 9.0, 14.0, 12.0, 30.0, 16.5, 28.0, 12.0, 43.0, 20.0, 23.0, 41.0, 19.0, 11.0, 20.0, 37.0, 29.0, 16.5, 14.0, 25.0, 24.0, 19.0, 16.0, 37.5, 16.0, 8.0, 16.5, 17.5, 31.5]}]};
+/*DATA_END*/
+
+const M=Object.assign({
+  scoring:{PTS:0.5,REB:1,AST:1,STL:2,BLK:2,TO:-1,TPM:0.5,DD:3,TD:3},
+  wLast:0.5, k:10, kProtected:20, minEmpirical:30, minGamesLast:20, sdAssumed:6.3, minuteDamp:0.5,
+  tierBars:{elite:40,mid:30,standard:26}, core:5, solid:4, dropN:2, ceilingSD:2
+}, DATA.meta.method||{});
+const TIERS={Core:M.core,Solid:M.solid};
+const $=s=>document.querySelector(s);
+const erf=x=>{const s=Math.sign(x);x=Math.abs(x);const t=1/(1+0.3275911*x);
+  return s*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x));};
+const pAbove=(bar,mu,sd)=>0.5*(1-erf((bar-mu)/(sd*Math.SQRT2)));
+const pdf=(x,mu,sd)=>Math.exp(-0.5*((x-mu)/sd)**2)/(sd*Math.sqrt(2*Math.PI));
+const f1=x=>x.toFixed(1), pc=x=>Math.round(x*100)+'%';
+const tagLabel=g=>({Drop:'Drop-first',IR:'IR hold',Protect:'Upside hold'}[g]||g);
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+function sdOf(p){ return p.last&&p.last.length>=M.minEmpirical ? sample(p.last) : (p.sd||M.sdAssumed); }
+function sample(a){const m=a.reduce((x,y)=>x+y,0)/a.length;return Math.sqrt(a.reduce((x,y)=>x+(y-m)**2,0)/(a.length-1));}
+function barOf(p){ return $('#barMode').value==='custom' ? +$('#customBar').value : p.bar; }
+function pEff(p){
+  const bar=barOf(p), sd=sdOf(p);
+  if(p.last&&p.last.length>=M.minEmpirical){ // last season's real games, shifted to this season's expected level
+    const m=p.last.reduce((x,y)=>x+y,0)/p.last.length, shift=p.mu-m;
+    return p.last.filter(x=>x+shift>=bar).length/p.last.length;
+  }
+  return pAbove(bar,p.mu,sd);
+}
+function compute(){
+  const z=+$('#sdSel').value;
+  const list=DATA.players.map(p=>{const sd=sdOf(p),bar=barOf(p),pe=pEff(p);
+    return Object.assign({},p,{sdU:sd,barU:bar,ceil:p.mu+z*sd,floor:p.mu-sd,pe,lock:pe*p.g});});
+  const active=list.filter(p=>p.status!=='IR').sort((a,b)=>b.lock-a.lock||b.mu-a.mu);
+  active.forEach((p,i)=>{p.rank=i+1;});
+  const open=active.filter(p=>!p.protect), DROPN=M.dropN;
+  open.forEach((p,i)=>{const n=open.length;
+    p.tag= i<TIERS.Core?'Core': i<TIERS.Core+TIERS.Solid?'Solid': i<n-DROPN?'Watch':'Drop';});
+  active.filter(p=>p.protect).forEach(p=>{p.tag='Protect';});
+  const ir=list.filter(p=>p.status==='IR');
+  ir.forEach(p=>{p.rank='IR';p.tag='IR';});
+  return active.concat(ir);
+}
+
+function curveSVG(p){
+  const W=320,H=140,L=10,R=10,base=104,top=14, X=v=>L+(W-L-R)*v/50;
+  const mu=p.mu, sd=p.sdU, bar=p.barU;
+  const xs=[];for(let v=0;v<=50;v+=0.5)xs.push(v);
+  let maxd=Math.max(...xs.map(v=>pdf(v,mu,sd)));
+  let hist=null;
+  if(p.last&&p.last.length>=M.minEmpirical){
+    const bw=2,bins=Array(25).fill(0);p.last.forEach(v=>{const i=Math.min(24,Math.max(0,Math.floor(v/bw)));bins[i]++;});
+    hist=bins.map(c=>c/(p.last.length*bw)); maxd=Math.max(maxd,...hist);
+  }
+  const Y=d=>base-(base-top)*d/maxd;
+  const line=xs.map((v,i)=>(i?'L':'M')+X(v).toFixed(1)+' '+Y(pdf(v,mu,sd)).toFixed(1)).join(' ');
+  const area=line+` L${X(50)} ${base} L${X(0)} ${base} Z`;
+  const lockPts=xs.filter(v=>v>=bar);
+  const lockPath=lockPts.length?('M'+X(bar).toFixed(1)+' '+base+' '+lockPts.map(v=>'L'+X(v).toFixed(1)+' '+Y(pdf(v,mu,sd)).toFixed(1)).join(' ')+` L${X(50)} ${base} Z`):'';
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bell curve of fantasy points for ${esc(p.name)}">`;
+  if(hist) hist.forEach((d,i)=>{const x=X(i*2),w=X(2)-X(0)-1;s+=`<rect x="${x.toFixed(1)}" y="${Y(d).toFixed(1)}" width="${w.toFixed(1)}" height="${(base-Y(d)).toFixed(1)}" fill="var(--hist)"/>`;});
+  s+=`<path d="${area}" fill="var(--curve-fill)"/>`;
+  if(lockPath) s+=`<path d="${lockPath}" fill="var(--lock-fill)"/>`;
+  s+=`<path d="${line}" fill="none" stroke="var(--curve)" stroke-width="2"${p.quality==='full'?'':' stroke-dasharray="5 3"'}/>`;
+  s+=`<line x1="${X(0)}" y1="${base}" x2="${X(50)}" y2="${base}" stroke="var(--line)"/>`;
+  [0,10,20,30,40,50].forEach(t=>{s+=`<text x="${X(t)}" y="${base+13}" font-size="9.5" fill="var(--muted)" text-anchor="middle">${t}</text>`;});
+  const vl=(v,c,lab,dash,yy)=>{const x=X(Math.min(50,v));return `<line x1="${x}" y1="${top-4}" x2="${x}" y2="${base}" stroke="${c}" stroke-width="1.6"${dash?' stroke-dasharray="4 3"':''}/><text x="${x}" y="${yy}" font-size="10" font-weight="700" fill="${c}" text-anchor="middle">${lab}</text>`;};
+  s+=vl(mu,'var(--ink)','Expected '+f1(mu),false,9);
+  s+=vl(bar,'var(--lock)','Bar '+bar,false,H-2);
+  s+=vl(p.ceil,'var(--ceil)','Ceiling '+f1(p.ceil),true,H-2<=0?9:9+11);
+  p.now.forEach(v=>{const x=X(Math.min(50,Math.max(0,v))),y=base+22;s+=`<path d="M${x} ${y-6} L${x+5} ${y} L${x} ${y+6} L${x-5} ${y} Z" fill="var(--ink)"><title>${f1(v)}</title></path>`;});
+  return s+'</svg>';
+}
+
+function qualityText(p){
+  if(p.quality==='full') return `Based on ${p.last.length} games last season (spread measured); this season's games blended in.`;
+  if(p.quality==='partial') return `Last-season average only, no game-by-game spread; spread assumed at ${M.sdAssumed}.`;
+  return `Estimate from preseason projection; spread assumed at ${M.sdAssumed}. Dashed curve means estimate.`;
+}
+
+
+function renderNotes(){
+  const s=M.scoring, k=M.k;
+  const wt=[1,3,5,10,20,40].map(n=>`<tr><td>${n}</td><td>${pc(n/(n+k))}</td><td>${pc(k/(n+k))}</td></tr>`).join('');
+  $('#notes').innerHTML=`
+  <h2>How this page is built</h2>
+  <p>Everything above is computed from the same few steps. Change a number in the settings and the page recalculates the same way.</p>
+  ${DATA.meta.prototype?'<p><b>Prototype note:</b> in this preview most players have no game logs yet, so their curves use the preseason projection and an assumed spread (dashed lines). The weights below are what the full run applies once logs are loaded.</p>':''}
+
+  <h3>1. Scoring</h3>
+  <div class="eq">Fantasy points = ${s.PTS} x points + ${s.REB} x rebounds + ${s.AST} x assists + ${s.STL} x steals + ${s.BLK} x blocks &minus; ${Math.abs(s.TO)} x turnovers + ${s.TPM} x threes made + ${s.DD} for a double-double + ${s.TD} for a triple-double</div>
+  <p>A double-double is 10 or more in two of points, rebounds, assists, steals and blocks. A triple-double earns both bonuses (${s.DD+s.TD} total). Every game on the page is scored this way.</p>
+
+  <h3>2. Expected points (the black line)</h3>
+  <p><b>Starting point.</b> ${pc(M.wLast)} last season's average and ${pc(1-M.wLast)} the preseason projection. If a player's role changed (new team, new starter or bench role), last season's number is converted to points per minute and rescaled to the minutes he plays now. When his minutes go up, only ${pc(M.minuteDamp)} of the proportional increase is credited, because bench production does not scale in a straight line. With no usable last season (rookies, or fewer than ${M.minGamesLast} games), the starting point is the projection alone.</p>
+  <p><b>Update with this season.</b> Expected = (sum of this season's game scores + ${k} x starting point) &divide; (games played + ${k}). The ${k} acts like ${k} games of prior belief, so early games move the number a little and later games move it more:</p>
+  <table><thead><tr><th>Games played</th><th>Weight on this season</th><th>Weight on starting point</th></tr></thead><tbody>${wt}</tbody></table>
+  <p>Protected rookies use ${M.kProtected} instead of ${k}, so a slow start or a short injury does not move them much.</p>
+
+  <h3>3. Spread, floor and ceiling (the curve)</h3>
+  <p>Spread is the standard deviation (SD) of last season's game scores, used when a player has ${M.minEmpirical} or more games. Otherwise it is assumed to be ${M.sdAssumed}, the SD measured for Quickley and Kuminga, and the curve is dashed.</p>
+  <div class="eq">Floor = expected &minus; 1 SD &nbsp;&nbsp; Ceiling = expected + (1, 1.5 or 2) x SD, your choice at the top</div>
+  <p>In a bell curve about 1 game in 40 lands above the 2 SD ceiling and about 1 in 15 above 1.5 SD. Treat it as a planning number, not a promise: real scores are not perfectly bell-shaped, and injuries or role changes break the pattern.</p>
+
+  <h3>4. Chance a game clears the lock bar</h3>
+  <p>Lock bars are ${M.tierBars.elite}+ for elite players, ${M.tierBars.mid}+ for mid-tier (Sengun, Flagg, Harden, Duren) and ${M.tierBars.standard}+ for everyone else. The top control can switch to one bar for all players.</p>
+  <p>With ${M.minEmpirical}+ games last season, the chance is the share of last season's games that would clear the bar after shifting every score by (expected &minus; last season's average). That keeps his real shape and moves it to this season's level. Without that history it comes from a normal curve with the expected value and spread above.</p>
+
+  <h3>5. Lockable games and the ranking</h3>
+  <div class="eq">Lockable games = chance per game at the bar x games his team plays this week</div>
+  <p>The table is sorted by lockable games, with expected points as the tie-break, because in the locked-in format only one big game per slot counts and a 4-game week gives more chances than a 3-game week. A player's rank can differ from his expected-points rank when his team has more or fewer games.</p>
+
+  <h3>6. Rosterability tags</h3>
+  <ul>
+    <li><b>Core</b>: the top ${M.core} active players by lockable games.</li>
+    <li><b>Solid</b>: the next ${M.solid}.</li>
+    <li><b>Watch</b>: the middle group.</li>
+    <li><b>Drop-first</b>: the bottom ${M.dropN} of the unprotected players. This is the list to check against any free agent, not an instruction to drop.</li>
+    <li><b>Upside hold</b>: players I chose to protect (draft capital, injured but expected to play a big role). They keep a visible rank but are skipped for Drop-first until their review point.</li>
+    <li><b>IR hold</b>: on the injured list, ranked but not counted in the tags.</li>
+  </ul>
+
+  <h3>7. Data quality labels</h3>
+  <ul>
+    <li><b>Solid line, grey bars</b>: full game-by-game logs from last season.</li>
+    <li><b>Dashed line, partial</b>: only this season's games or a season average; spread assumed.</li>
+    <li><b>Dashed line, projection</b>: preseason projection only.</li>
+  </ul>
+
+  <h3>8. What this page cannot see, and what to re-check</h3>
+  <ul>
+    <li><b>Small samples.</b> This season's games carry little weight early. Re-run after every week and revisit rank-sensitive players at 10 games.</li>
+    <li><b>Role changes.</b> Last season's numbers describe last season's minutes. Watch minutes per game, starter status and teammates returning from injury.</li>
+    <li><b>Schedule shape.</b> Back-to-backs and rest days inside a week are not modeled, only the game count.</li>
+    <li><b>Injury news.</b> The status chips come from the latest report at build time and go stale quickly.</li>
+    <li><b>Free agents.</b> To compare a free agent, run him through the same steps. He should beat the player he replaces on expected points and on lockable games, and have a secure role.</li>
+  </ul>`;
+}
+
+function render(){
+  const list=compute();
+  $('#wk').textContent=DATA.week.label; $('#dates').textContent=DATA.week.dates;
+  $('#sub').textContent=`${DATA.meta.league}. Updated ${DATA.meta.asOf}. Sorted by lockable games: the chance a game clears the bar, times the games this week.`;
+  if(DATA.meta.prototype){$('#banner').hidden=false;$('#banner').textContent='Prototype layout. Quickley and Kuminga use real last-season logs. Other curves are estimates from preseason projections with an assumed spread until the full analysis fills this page.';}
+  // games per team style buckets
+  const g=$('#gpt');g.innerHTML='<b>Games this week</b>';
+  [4,3,2,1,0].forEach(n=>{const ps=list.filter(p=>p.g===n);if(!ps.length&&n<3)return;
+    const row=document.createElement('div');row.className='gpt';row.style.marginTop='10px';
+    row.innerHTML=`<div class="n">${n}</div><div class="chips">${ps.length?ps.map(p=>`<span class="chip">${esc(p.short)}</span>`).join(''):'<span class="chip none">none</span>'}</div>`;g.appendChild(row);});
+  // watch list
+  const wl=(DATA.week.watch||[]);
+  const wcard=$('#watch');
+  if(wl.length){
+    wcard.hidden=false;
+    wcard.innerHTML='<b>This week — 5 things to check</b><ol style="margin:8px 0 0;padding-left:20px;font-size:14px;color:var(--ink)">'
+      +wl.map(n=>`<li style="margin:5px 0;line-height:1.4">${esc(n)}</li>`).join('')+'</ol>';
+  } else { wcard.hidden=true; }
+  // table
+  $('#rows').innerHTML=list.map(p=>`<tr class="row" tabindex="0" data-id="${esc(p.name)}">
+    <td class="rk">${p.rank}</td><td><b>${esc(p.name)}</b><span class="tm">${p.team}</span>${p.status==='GTD'?' <span class="tm" title="'+esc(p.note||'')+'">GTD</span>':''}</td>
+    <td>${p.g}</td><td>${f1(p.mu)}</td><td style="color:var(--ceil);font-weight:700">${f1(p.ceil)}</td><td>${p.barU}</td><td>${pc(p.pe)}</td><td><b>${p.lock.toFixed(2)}</b></td>
+    <td><span class="pill ${p.tag}">${tagLabel(p.tag)}</span></td></tr>`).join('');
+  // cards
+  $('#cards').innerHTML=list.map(p=>`<article class="pcard" id="c-${esc(p.name).replace(/[^a-z0-9]/gi,'')}">
+    <header><h3>${p.rank==='IR'?'':p.rank+'. '}${esc(p.name)}</h3><span class="pill ${p.tag}">${tagLabel(p.tag)}</span></header>
+    <div class="meta">${p.team}${p.note?' | '+esc(p.note):''}</div>
+    ${p.protect?'<div class="q" style="color:#7a5bd0;font-weight:600">Protected: '+esc(p.protect)+'</div>':''}
+    <div class="q">${qualityText(p)}</div>
+    ${curveSVG(p)}
+    <div class="stats">
+      <div><b>${f1(p.mu)}</b>Expected</div>
+      <div><b>${f1(p.floor)}</b>Floor</div>
+      <div><b class="ceil">${f1(p.ceil)}</b>Ceiling</div>
+      <div><b class="lock">${pc(p.pe)}</b>At bar ${p.barU}</div>
+    </div>
+    <ul class="mon">${(p.mon||[]).map(m=>`<li>${esc(m)}</li>`).join('')}</ul>
+  </article>`).join('');
+  document.querySelectorAll('tr.row').forEach(r=>{const go=()=>{const el=document.getElementById('c-'+r.dataset.id.replace(/[^a-z0-9]/gi,''));if(el)el.scrollIntoView({behavior:'smooth',block:'center'});};
+    r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter')go();});});
+  renderNotes();
+  $('#foot').textContent=`Built ${DATA.meta.asOf}. Data: NBA Stats game logs via the nba-data skill, your roster settings, and the published schedule.`;
+}
+$('#barMode').addEventListener('change',()=>{$('#customWrap').hidden=$('#barMode').value!=='custom';render();});
+$('#customBar').addEventListener('input',()=>{$('#customOut').textContent=$('#customBar').value;render();});
+$('#sdSel').value=String(M.ceilingSD);
+$('#sdSel').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>
