@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="quickref-template" content="nba-quickref road to 260 v1.1">
+<meta name="quickref-template" content="nba-quickref road to 260 v1.2">
 <title>The Road to 260</title>
 <style>
 :root{--bg:#ffffff;--ink:#0b0b0b;--muted:#9b9b9b;--faint:#dedede;--yellow:#ffe600;--red:#ff3b1f;--green:#12a150;--card:#ffffff;--line:#0b0b0b}
@@ -15,8 +15,10 @@ html,body{margin:0}
 body{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.35;
   padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
 .wrap{max-width:1320px;margin:0 auto;padding:18px 20px 56px}
-.navlink{display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--faint)}
+.navlink{display:inline-flex;align-items:center;min-height:36px;font-size:14px;color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--faint)}
 .navlink:hover{border-color:var(--ink)}
+.sitenav{display:flex;align-items:center;flex-wrap:wrap;gap:4px 14px;margin:0 0 4px}
+.sitenav .sep{color:var(--muted);font-size:12px;user-select:none}
 .top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin:6px 0 22px}
 .title{font-family:Impact,Haettenschweiler,"Arial Narrow Bold","Arial Black",sans-serif;font-weight:900;text-transform:uppercase;letter-spacing:-.01em;
   font-size:clamp(46px,9.2vw,112px);line-height:.92;margin:0}
@@ -113,7 +115,11 @@ body{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial
 </head>
 <body>
 <div class="wrap">
-  <a class="navlink" id="back" href="roster_quickref.html">&larr; Roster quick reference</a>
+  <nav class="sitenav" aria-label="Site navigation">
+    <a class="navlink" href="roster_quickref.html">&larr; Roster</a>
+    <span class="sep">&middot;</span>
+    <a class="navlink" href="free_agents.html">&larr; Free agents</a>
+  </nav>
   <div class="top">
     <div>
       <h1 class="title">The Road to 260</h1>
