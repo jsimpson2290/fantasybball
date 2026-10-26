@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Roster Quick Reference</title>
-<!-- quickref-template v1.1 -->
+<meta name="quickref-template" content="nba-quickref v3.2">
 <style>
 :root{
   --bg:#f4f6f9; --surface:#ffffff; --ink:#142030; --muted:#5a6b7c; --line:#dde3ea;
@@ -45,8 +45,10 @@ h1{font-size:26px;margin:0 0 2px;letter-spacing:-.01em}
 .howto{font-size:13.5px;color:var(--muted);margin:10px 0 0}
 .howto b{color:var(--ink)}
 table{width:100%;border-collapse:collapse;font-size:14.5px}
-th,td{padding:9px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
-th{font-weight:600;color:var(--muted);font-size:13px;position:sticky;top:0;background:var(--surface)}
+th,td{padding:9px 8px;text-align:right;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);font-size:13px;position:sticky;top:0;background:var(--surface);white-space:nowrap}
+td:not(:nth-child(2)){white-space:nowrap}
+.th-s{display:none}
 th:nth-child(2),td:nth-child(2){text-align:left}
 td.rk{color:var(--muted);width:32px}
 tr.row{cursor:pointer}
@@ -104,13 +106,19 @@ ol.watch li{margin:7px 0;max-width:84ch;font-size:14.5px}
 .howto-wrap p.howto{margin:6px 0 0}
 tr.expand-row{background:var(--chip)}
 .inline-expand{padding:0!important}
-.inline-expand>td{padding:0!important;border-bottom:1px solid var(--line)!important}
+.inline-expand>td{padding:0!important;border-bottom:1px solid var(--line)!important;text-align:left!important;white-space:normal!important;vertical-align:top}
 .icard{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;padding:12px 16px 14px}
 .icard .icurve{flex:0 0 auto;width:min(420px,100%);max-width:420px}
 .icard .imeta{flex:1 1 220px;min-width:0;overflow-wrap:break-word}
 .icard .imeta .meta{color:var(--muted);font-size:13px;margin-bottom:4px}
 .icard .imeta .q{font-size:12px;color:var(--muted);margin:0 0 6px}
-@media(max-width:600px){th.col-bar,td.col-bar,th.col-pct,td.col-pct{display:none}}
+@media(max-width:1000px){th.col-bar,td.col-bar,th.col-pct,td.col-pct{display:none}}
+@media(max-width:700px){th.col-g,td.col-g{display:none}}
+@media(max-width:600px){.th-l{display:none}.th-s{display:inline}}
+@media(max-width:500px){th,td{padding:6px 4px;font-size:13px}.pill{font-size:11px;padding:2px 7px}}
+.icard-hidden{display:none;font-size:13px;color:var(--muted);margin:0 0 6px}
+@media(max-width:1000px){.icard-hidden{display:block}}
+.icard .imeta ul.mon{white-space:normal;text-align:left}
 </style>
 </head>
 <body>
@@ -141,7 +149,7 @@ tr.expand-row{background:var(--chip)}
 
   <div class="card tablewrap">
     <table>
-      <thead><tr><th></th><th>Player</th><th>Games</th><th>Expected</th><th>Ceiling</th><th class="col-bar">Bar</th><th class="col-pct">Per game at bar</th><th>Lockable games</th><th>Rosterability</th></tr></thead>
+      <thead><tr><th></th><th>Player</th><th class="col-g">Games</th><th><span class="th-l">Expected</span><span class="th-s">Exp</span></th><th><span class="th-l">Ceiling</span><span class="th-s">Ceil</span></th><th class="col-bar">Bar</th><th class="col-pct">Per game at bar</th><th><span class="th-l">Lockable games</span><span class="th-s">Lock</span></th><th><span class="th-l">Rosterability</span><span class="th-s">Tag</span></th></tr></thead>
       <tbody id="rows"></tbody>
     </table>
   </div>
@@ -203,7 +211,7 @@ function compute(){
 }
 
 function curveSVG(p){
-  const W=320,H=140,L=10,R=10,base=104,top=14;
+  const W=320,H=160,L=10,R=10,base=104,top=14;
   const mu=p.mu, sd=p.sdU, bar=p.barU;
   const xMax=Math.max(50,Math.ceil(p.ceil)+5);
   const X=v=>L+(W-L-R)*v/xMax;
@@ -350,7 +358,7 @@ function render(){
   // table
   $('#rows').innerHTML=list.map(p=>`<tr class="row" tabindex="0" data-id="${esc(p.name)}">
     <td class="rk">${p.rank}</td><td><b>${esc(p.name)}</b><span class="tm">${p.team}</span>${p.status==='GTD'?' <span class="tm" title="'+esc(p.note||'')+'">GTD</span>':''}</td>
-    <td>${p.g}</td><td>${f1(p.mu)}</td><td style="color:var(--ceil);font-weight:700">${f1(p.ceil)}</td><td class="col-bar">${p.barU}</td><td class="col-pct">${pc(p.pe)}</td><td><b>${p.lock.toFixed(2)}</b></td>
+    <td class="col-g">${p.g}</td><td>${f1(p.mu)}</td><td style="color:var(--ceil);font-weight:700">${f1(p.ceil)}</td><td class="col-bar">${p.barU}</td><td class="col-pct">${pc(p.pe)}</td><td><b>${p.lock.toFixed(2)}</b></td>
     <td><span class="pill ${p.tag}">${tagLabel(p.tag)}</span></td></tr>`).join('');
   document.querySelectorAll('tr.row').forEach(r=>{
     const go=()=>{
@@ -363,9 +371,10 @@ function render(){
       ex.innerHTML=`<td colspan="9" class="inline-expand"><div class="icard">
         <div class="icurve">${curveSVG(p)}</div>
         <div class="imeta">
-          <div class="meta">${p.team}${p.note?' | '+esc(p.note):''}</div>
+          ${p.note?`<div class="meta">${p.team} | ${esc(p.note)}</div>`:''}
           ${p.protect?'<div class="q" style="color:#7a5bd0;font-weight:600">Protected: '+esc(p.protect)+'</div>':''}
           <div class="q">${qualityText(p)}</div>
+          <div class="icard-hidden">Bar ${p.barU} · ${pc(p.pe)} at bar · ${p.g} games this week</div>
           <div class="stats"><div><b>${f1(p.mu)}</b>Expected</div><div><b>${f1(p.floor)}</b>Floor</div><div><b class="ceil">${f1(p.ceil)}</b>Ceiling</div><div><b class="lock">${pc(p.pe)}</b>At bar ${p.barU}</div></div>
           <ul class="mon">${(p.mon||[]).map(m=>`<li>${esc(m)}</li>`).join('')}</ul>
         </div></div></td>`;
