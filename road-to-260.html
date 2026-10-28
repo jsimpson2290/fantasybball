@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="quickref-template" content="nba-quickref road to 260 v1.2">
+<meta name="quickref-template" content="nba-quickref road to 260 v1.4">
 <title>The Road to 260</title>
 <style>
 :root{--bg:#ffffff;--ink:#0b0b0b;--muted:#9b9b9b;--faint:#dedede;--yellow:#ffe600;--red:#ff3b1f;--green:#12a150;--card:#ffffff;--line:#0b0b0b}
@@ -111,9 +111,112 @@ body{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial
   .pager span{padding:10px 12px}.pager .wk{padding:10px 14px}
 }
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+/* --- qrnav: shared site nav --- */
+#qrnav-rail{position:fixed;top:0;left:0;bottom:0;width:56px;background:var(--surface,var(--card,#fff));border-right:1.5px solid var(--line,#ddd);z-index:200;display:flex;flex-direction:column;overflow:hidden;transition:width .22s cubic-bezier(0,0,.2,1)}
+#qrnav-rail.open{width:180px}
+#qrnav-toggle{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:1.5px solid var(--line,#ddd);background:transparent;color:var(--ink);cursor:pointer;flex-shrink:0;margin:10px auto 4px;padding:0}
+#qrnav-toggle:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#qrnav-toggle .icon-open{display:block}#qrnav-toggle .icon-close{display:none}
+#qrnav-rail.open #qrnav-toggle .icon-open{display:none}#qrnav-rail.open #qrnav-toggle .icon-close{display:block}
+.qrnav-items{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+.qrnav-item{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 8px;border-radius:10px;color:var(--muted);text-decoration:none;white-space:nowrap;font-size:13.5px;font-weight:600;transition:background .12s,color .12s}
+.qrnav-item:hover{color:var(--ink);background:rgba(0,0,0,.05)}
+@media(prefers-color-scheme:dark){.qrnav-item:hover{background:rgba(255,255,255,.07)}}
+.qrnav-item svg{width:22px;height:22px;flex-shrink:0}
+.qrnav-label{opacity:0;transition:opacity .12s;pointer-events:none}
+#qrnav-rail.open .qrnav-label{opacity:1;pointer-events:auto}
+.qrnav-item[aria-current="page"]{color:var(--ink)}
+#qrnav-tabs{display:none}
+@media(max-width:767px){
+  #qrnav-rail{display:none}
+  #qrnav-tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--surface,var(--card,#fff));border-top:1.5px solid var(--line,#ddd);z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
+  .qrnav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:52px;color:var(--muted);text-decoration:none;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:6px 0}
+  .qrnav-tab svg{width:22px;height:22px}
+  .qrnav-tab[aria-current="page"]{color:var(--ink)}
+  body{padding-bottom:calc(52px + env(safe-area-inset-bottom,0))}
+}
+@media(min-width:768px){body{padding-left:56px}}
+@media(prefers-reduced-motion:reduce){#qrnav-rail{transition:none}.qrnav-label,.qrnav-item{transition:none}}
+/* --- planner --- */
+.pl-card{margin-top:20px}
+.plan-tabs{display:flex;gap:4px;margin:0 0 16px;flex-wrap:wrap}
+.plan-tab{border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--muted);cursor:pointer;transition:background 120ms cubic-bezier(0.23,1,0.32,1),color 120ms cubic-bezier(0.23,1,0.32,1),transform 100ms ease-out}
+.plan-tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.plan-tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.plan-tab:active{transform:scale(0.97)}
+.ps-hd,.ps{display:grid;grid-template-columns:42px minmax(130px,1.5fr) 90px 58px 80px 40px;gap:6px;align-items:center}
+.ps-hd{font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;padding:0 0 8px;border-bottom:1.5px solid var(--line)}
+.ps{padding:7px 0;border-top:1px solid var(--faint);transition:opacity 180ms ease-out,transform 180ms ease-out}
+@starting-style{.ps{opacity:0;transform:translateY(4px)}}
+.ps .lb{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--muted)}
+.ps .pn{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps .ti{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.ps .pj{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+.bt-wrap{display:flex;align-items:center;gap:3px;font-size:11.5px}
+.bt-in{width:40px;border:1.5px solid var(--faint);border-radius:6px;padding:2px 4px;font-size:12px;font-weight:700;text-align:right;background:var(--bg);color:var(--ink);font-variant-numeric:tabular-nums}
+.bt-in:focus{outline:2px solid var(--ink);outline-color:var(--ink)}
+.lk-btn{border:1.5px solid var(--faint);border-radius:8px;padding:3px 6px;font-size:10px;font-weight:900;cursor:pointer;background:transparent;color:var(--muted);letter-spacing:.04em;transition:background 120ms cubic-bezier(0.23,1,0.32,1),color 120ms cubic-bezier(0.23,1,0.32,1),border-color 120ms cubic-bezier(0.23,1,0.32,1),transform 100ms ease-out}
+.lk-btn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lk-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.lk-btn:active{transform:scale(0.97)}
+.fb-block{padding:4px 0 6px 42px;display:grid;gap:2px}
+.fb-row{display:flex;align-items:flex-start;gap:7px;padding:3px 0;font-size:12px}
+.fb-arr{color:var(--muted);flex-shrink:0;padding-top:1px;user-select:none}
+.fb-body{display:flex;flex-direction:column;gap:2px}
+.fb-instr{font-size:12.5px;font-weight:600}
+.fb-meta{font-size:11px;color:var(--muted)}
+.fb-row.conflict-fb{border-left:2px solid var(--red);margin-left:-8px;padding-left:8px}
+.conf-banner{background:rgba(255,59,31,.07);border:1.5px solid var(--red);border-radius:10px;padding:8px 12px;font-size:12.5px;margin:12px 0;color:var(--red)}
+.tl-wrap{margin-top:18px;border-top:1.5px solid var(--line);padding-top:14px}
+.tl-row{display:flex;gap:12px;align-items:flex-start;padding:5px 0;border-top:1px solid var(--faint)}
+.tl-time{font-size:11.5px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);min-width:76px;flex-shrink:0}
+.tl-text{font-size:12.5px}
+.tl-row.tip-evt .tl-time{color:var(--ink)}
+.tl-row.tip-evt .tl-text{font-weight:700}
+.pl-note{font-size:11.5px;color:var(--muted);margin-top:12px}
+@media(max-width:700px){
+  .ps-hd,.ps{grid-template-columns:34px 1fr 0 54px 60px 32px;gap:4px}
+  .ps-hd>*:nth-child(3),.ps .ti{display:none}
+}
 </style>
 </head>
 <body>
+<nav id="qrnav" aria-label="Site navigation">
+<div id="qrnav-rail">
+  <button id="qrnav-toggle" aria-label="Expand navigation" aria-expanded="false">
+    <svg class="icon-open" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    <svg class="icon-close" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="qrnav-items">
+    <a href="#" id="nav-roster" class="qrnav-item" aria-label="Rankings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+      <span class="qrnav-label">Rankings</span>
+    </a>
+    <a href="#" id="nav-fa" class="qrnav-item" aria-label="Free Agents">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+      <span class="qrnav-label">Free Agents</span>
+    </a>
+    <a href="#" id="nav-r260" class="qrnav-item" aria-label="Road to 260">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      <span class="qrnav-label">Road to 260</span>
+    </a>
+  </div>
+</div>
+<div id="qrnav-tabs">
+  <a href="#" id="nav-roster-m" class="qrnav-tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+    <span>Rankings</span>
+  </a>
+  <a href="#" id="nav-fa-m" class="qrnav-tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+    <span>Free Agents</span>
+  </a>
+  <a href="#" id="nav-r260-m" class="qrnav-tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+    <span>Road to 260</span>
+  </a>
+</div>
+</nav>
 <div class="wrap">
   <nav class="sitenav" aria-label="Site navigation">
     <a class="navlink" id="back" href="roster_quickref.html">&larr; Roster</a>
@@ -135,11 +238,18 @@ body{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial
     </div>
     <section class="card" id="guide"></section>
   </div>
+  <section class="card pl-card" id="planner-card" hidden>
+    <p class="cap">Lineup planner &middot; <span id="plan-day-label"></span></p>
+    <div id="planner-warn" class="banner" hidden></div>
+    <div id="plan-tabs" class="plan-tabs" role="tablist"></div>
+    <div id="plan-body"></div>
+    <div id="plan-timeline"></div>
+  </section>
   <section class="card notes" id="notes"></section>
 </div>
 <script>
 /*DATA_START*/
-const DATA = {"meta": {"league": "Bill Liambeerme", "asOf": "Oct 28, 2026", "target": 260.0, "sdExtra": 0.5, "prototype": false, "slots": ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL", "UTIL"], "source": "https://api.sleeper.app/projections/nba/player/{player_id}?season_type=regular&season=2026&week=2", "projFetched": "2026-10-28T12:57:04"}, "week": {"label": "Week 2", "dates": "Oct 26 – Nov 1", "days": [{"key": "MON", "date": 26, "iso": "2026-10-26", "today": false, "league": null}, {"key": "TUE", "date": 27, "iso": "2026-10-27", "today": false, "league": null}, {"key": "WED", "date": 28, "iso": "2026-10-28", "today": true, "league": null}, {"key": "THU", "date": 29, "iso": "2026-10-29", "today": false, "league": null}, {"key": "FRI", "date": 30, "iso": "2026-10-30", "today": false, "league": null}, {"key": "SAT", "date": 31, "iso": "2026-10-31", "today": false, "league": null}, {"key": "SUN", "date": 1, "iso": "2026-11-01", "today": false, "league": null}]}, "total": 274.3, "gap": -14.3, "slots": [{"slot": "PG", "name": "James Harden", "short": "Harden", "lock": 28.1, "proj": 23.8, "sd": 8.5, "day": "WED", "opp": "WAS", "src": "sleeper"}, {"slot": "SG", "name": "Jaylen Brown", "short": "Brown", "lock": 28.9, "proj": 25.1, "sd": 7.5, "day": "WED", "opp": "IND", "src": "sleeper"}, {"slot": "SF", "name": "Ace Bailey", "short": "Bailey", "lock": 31.0, "proj": 31.0, "sd": 0.0, "day": "MON", "opp": "MEM", "src": "actual"}, {"slot": "PF", "name": "Paul Reed", "short": "Reed", "lock": 27.8, "proj": 23.4, "sd": 8.8, "day": "FRI", "opp": "BKN", "src": "sleeper"}, {"slot": "C", "name": "Jabari Smith Jr.", "short": "Jr.", "lock": 32.0, "proj": 32.0, "sd": 0.0, "day": "MON", "opp": "ATL", "src": "actual"}, {"slot": "G", "name": "Cooper Flagg", "short": "Flagg", "lock": 46.5, "proj": 46.5, "sd": 0.0, "day": "MON", "opp": "MIA", "src": "actual"}, {"slot": "F", "name": "Josh Hart", "short": "Hart", "lock": 27.6, "proj": 23.7, "sd": 7.8, "day": "WED", "opp": "CHI", "src": "sleeper"}, {"slot": "UTIL", "name": "Precious Achiuwa", "short": "Achiuwa", "lock": 26.4, "proj": 21.8, "sd": 9.2, "day": "THU", "opp": "NOP", "src": "sleeper"}, {"slot": "UTIL", "name": "P.J. Washington", "short": "Washington", "lock": 26.0, "proj": 26.0, "sd": 0.0, "day": "MON", "opp": "MIA", "src": "actual"}], "rows": [{"name": "James Harden", "short": "Harden", "team": "CLE", "pos": "PG", "status": "active", "note": "", "out": false, "sd": 8.5, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 26.0, "opp": "MIN", "away": false, "src": "actual", "val": 26.0, "best": false}, {"iso": "2026-10-28", "day": "WED", "pts": 23.8, "opp": "WAS", "away": false, "src": "sleeper", "val": 28.07, "best": true}, {"iso": "2026-10-29", "day": "THU", "pts": 22.8, "opp": "ATL", "away": false, "src": "sleeper", "val": 27.01, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 23.8, "opp": "MIL", "away": false, "src": "sleeper", "val": 28.01, "best": false}], "noproj": false, "model": false, "slot": "PG", "lock": 28.1, "best_pts": 23.8, "best_src": "sleeper"}, {"name": "Jaylen Brown", "short": "Brown", "team": "PHI", "pos": "PF/SF/SG", "status": "active", "note": "", "out": false, "sd": 7.5, "games": [{"iso": "2026-10-28", "day": "WED", "pts": 25.1, "opp": "IND", "away": false, "src": "sleeper", "val": 28.86, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 23.7, "opp": "NYK", "away": false, "src": "sleeper", "val": 27.51, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 23.0, "opp": "CHA", "away": false, "src": "sleeper", "val": 26.73, "best": false}], "noproj": false, "model": false, "slot": "SG", "lock": 28.9, "best_pts": 25.1, "best_src": "sleeper"}, {"name": "Ace Bailey", "short": "Bailey", "team": "UTA", "pos": "PF/SF", "status": "active", "note": "", "out": false, "sd": 6.3, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 31.0, "opp": "MEM", "away": false, "src": "actual", "val": 31.0, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 17.6, "opp": "SAS", "away": false, "src": "sleeper", "val": 20.72, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 15.2, "opp": "POR", "away": false, "src": "sleeper", "val": 18.39, "best": false}], "noproj": false, "model": false, "slot": "SF", "lock": 31.0, "best_pts": 31.0, "best_src": "actual"}, {"name": "Paul Reed", "short": "Reed", "team": "DET", "pos": "C/PF", "status": "active", "note": "", "out": false, "sd": 8.8, "games": [{"iso": "2026-10-27", "day": "TUE", "pts": 27.5, "opp": "NYK", "away": false, "src": "actual", "val": 27.5, "best": false}, {"iso": "2026-10-28", "day": "WED", "pts": 22.0, "opp": "CHA", "away": false, "src": "sleeper", "val": 26.4, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 23.4, "opp": "BKN", "away": false, "src": "sleeper", "val": 27.78, "best": true}], "noproj": false, "model": false, "slot": "PF", "lock": 27.8, "best_pts": 23.4, "best_src": "sleeper"}, {"name": "Jabari Smith Jr.", "short": "Jr.", "team": "HOU", "pos": "C/PF", "status": "active", "note": "", "out": false, "sd": 5.8, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 32.0, "opp": "ATL", "away": false, "src": "actual", "val": 32.0, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 21.7, "opp": "MIL", "away": false, "src": "sleeper", "val": 24.64, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 18.1, "opp": "DAL", "away": false, "src": "sleeper", "val": 21.0, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 16.4, "opp": "OKC", "away": false, "src": "sleeper", "val": 19.32, "best": false}], "noproj": false, "model": false, "slot": "C", "lock": 32.0, "best_pts": 32.0, "best_src": "actual"}, {"name": "Cooper Flagg", "short": "Flagg", "team": "DAL", "pos": "PG/SF/SG", "status": "active", "note": "Shoulder, questionable", "out": false, "sd": 9.0, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 46.5, "opp": "MIA", "away": false, "src": "actual", "val": 46.5, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 25.9, "opp": "OKC", "away": false, "src": "sleeper", "val": 30.39, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 23.9, "opp": "HOU", "away": false, "src": "sleeper", "val": 28.47, "best": false}], "noproj": false, "model": false, "slot": "G", "lock": 46.5, "best_pts": 46.5, "best_src": "actual"}, {"name": "Josh Hart", "short": "Hart", "team": "NYK", "pos": "SF/SG", "status": "active", "note": "", "out": false, "sd": 7.8, "games": [{"iso": "2026-10-27", "day": "TUE", "pts": 19.0, "opp": "DET", "away": false, "src": "actual", "val": 19.0, "best": false}, {"iso": "2026-10-28", "day": "WED", "pts": 23.7, "opp": "CHI", "away": false, "src": "sleeper", "val": 27.59, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 23.1, "opp": "PHI", "away": false, "src": "sleeper", "val": 27.04, "best": false}], "noproj": false, "model": false, "slot": "F", "lock": 27.6, "best_pts": 23.7, "best_src": "sleeper"}, {"name": "Precious Achiuwa", "short": "Achiuwa", "team": "SAC", "pos": "C/PF", "status": "active", "note": "", "out": false, "sd": 9.2, "games": [{"iso": "2026-10-27", "day": "TUE", "pts": 3.0, "opp": "SAS", "away": false, "src": "actual", "val": 3.0, "best": false}, {"iso": "2026-10-29", "day": "THU", "pts": 21.8, "opp": "NOP", "away": false, "src": "sleeper", "val": 26.39, "best": true}, {"iso": "2026-10-31", "day": "SAT", "pts": 21.7, "opp": "MEM", "away": false, "src": "sleeper", "val": 26.32, "best": false}], "noproj": false, "model": false, "slot": "UTIL", "lock": 26.4, "best_pts": 21.8, "best_src": "sleeper"}, {"name": "P.J. Washington", "short": "Washington", "team": "DAL", "pos": "C/PF/SF", "status": "active", "note": "", "out": false, "sd": 7.2, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 26.0, "opp": "MIA", "away": false, "src": "actual", "val": 26.0, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 20.7, "opp": "OKC", "away": false, "src": "sleeper", "val": 24.27, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 19.4, "opp": "HOU", "away": false, "src": "sleeper", "val": 23.02, "best": false}], "noproj": false, "model": false, "slot": "UTIL", "lock": 26.0, "best_pts": 26.0, "best_src": "actual"}, {"name": "Desmond Bane", "short": "Bane", "team": "ORL", "pos": "PG/SG", "status": "active", "note": "", "out": false, "sd": 6.5, "games": [{"iso": "2026-10-28", "day": "WED", "pts": 21.5, "opp": "TOR", "away": false, "src": "sleeper", "val": 24.76, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 21.5, "opp": "TOR", "away": false, "src": "sleeper", "val": 24.71, "best": false}, {"iso": "2026-11-01", "day": "SUN", "pts": 19.0, "opp": "BOS", "away": false, "src": "sleeper", "val": 22.23, "best": false}], "noproj": false, "model": false, "slot": "BN", "lock": 24.8, "best_pts": 21.5, "best_src": "sleeper"}, {"name": "Jonathan Kuminga", "short": "Kuminga", "team": "MIN", "pos": "PF", "status": "active", "note": "", "out": false, "sd": 6.3, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 23.0, "opp": "CLE", "away": false, "src": "actual", "val": 23.0, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 18.9, "opp": "GSW", "away": false, "src": "sleeper", "val": 22.04, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 18.6, "opp": "LAC", "away": false, "src": "sleeper", "val": 21.78, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 18.4, "opp": "SAS", "away": false, "src": "sleeper", "val": 21.51, "best": false}], "noproj": false, "model": false, "slot": "BN", "lock": 23.0, "best_pts": 23.0, "best_src": "actual"}, {"name": "Immanuel Quickley", "short": "Quickley", "team": "TOR", "pos": "PG/SG", "status": "active", "note": "", "out": false, "sd": 6.3, "games": [{"iso": "2026-10-28", "day": "WED", "pts": 19.2, "opp": "ORL", "away": false, "src": "sleeper", "val": 22.37, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 19.5, "opp": "ORL", "away": false, "src": "sleeper", "val": 22.59, "best": true}, {"iso": "2026-11-01", "day": "SUN", "pts": 18.0, "opp": "LAL", "away": false, "src": "sleeper", "val": 21.12, "best": false}], "noproj": false, "model": false, "slot": "BN", "lock": 22.6, "best_pts": 19.5, "best_src": "sleeper"}, {"name": "AJ Dybantsa", "short": "Dybantsa", "team": "WAS", "pos": "PF/SF", "status": "GTD", "note": "GTD (Sleeper)", "out": false, "sd": 6.3, "games": [{"iso": "2026-10-28", "day": "WED", "pts": 12.9, "opp": "CLE", "away": false, "src": "sleeper", "val": 16.09, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 10.3, "opp": "CHA", "away": false, "src": "sleeper", "val": 13.47, "best": false}], "noproj": false, "model": false, "slot": "BN", "lock": 16.1, "best_pts": 12.9, "best_src": "sleeper"}, {"name": "Alperen Şengün", "short": "Şengün", "team": "HOU", "pos": "C/PF", "status": "GTD", "note": "Out (Sleeper)", "out": true, "sd": 10.4, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 41.0, "opp": "ATL", "away": false, "src": "actual", "val": 41.0, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 30.8, "opp": "DAL", "away": false, "src": "sleeper", "val": 36.02, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 27.6, "opp": "OKC", "away": false, "src": "sleeper", "val": 32.8, "best": false}], "noproj": false, "model": false, "slot": "OUT", "lock": 41.0, "best_pts": 41.0, "best_src": "actual"}, {"name": "Jalen Duren", "short": "Duren", "team": "DET", "pos": "C", "status": "IR", "note": "On my IR slot (Out)", "out": true, "sd": 8.7, "games": [], "noproj": false, "model": false, "slot": "OUT", "lock": null, "best_pts": null, "best_src": null}], "gpt": {"4": ["ATL", "BOS", "CHA", "CLE", "GSW", "HOU", "IND", "LAL", "MIN"], "2": ["PHX"], "3": ["BKN", "CHI", "DAL", "DEN", "DET", "LAC", "MEM", "MIA", "MIL", "NOP", "NYK", "OKC", "ORL", "PHI", "POR", "SAC", "SAS", "TOR", "UTA", "WAS"]}, "mine": ["CLE", "DAL", "DET", "HOU", "MIN", "NYK", "ORL", "PHI", "SAC", "TOR", "UTA", "WAS"]};
+const DATA = {"meta": {"league": "Bill Liambeerme", "asOf": "Oct 28, 2026", "target": 260.0, "sdExtra": 0.5, "prototype": false, "slots": ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL", "UTIL"], "source": "https://api.sleeper.app/projections/nba/player/{player_id}?season_type=regular&season=2026&week=2", "projFetched": "2026-10-28T12:57:04"}, "week": {"label": "Week 2", "dates": "Oct 26 – Nov 1", "days": [{"key": "MON", "date": 26, "iso": "2026-10-26", "today": false, "league": 9}, {"key": "TUE", "date": 27, "iso": "2026-10-27", "today": false, "league": 4}, {"key": "WED", "date": 28, "iso": "2026-10-28", "today": true, "league": 12}, {"key": "THU", "date": 29, "iso": "2026-10-29", "today": false, "league": 3}, {"key": "FRI", "date": 30, "iso": "2026-10-30", "today": false, "league": 10}, {"key": "SAT", "date": 31, "iso": "2026-10-31", "today": false, "league": 7}, {"key": "SUN", "date": 1, "iso": "2026-11-01", "today": false, "league": 4}]}, "total": 274.3, "gap": -14.3, "slots": [{"slot": "PG", "name": "James Harden", "short": "Harden", "lock": 28.1, "proj": 23.8, "sd": 8.5, "day": "WED", "opp": "WAS", "src": "sleeper"}, {"slot": "SG", "name": "Jaylen Brown", "short": "Brown", "lock": 28.9, "proj": 25.1, "sd": 7.5, "day": "WED", "opp": "IND", "src": "sleeper"}, {"slot": "SF", "name": "Ace Bailey", "short": "Bailey", "lock": 31.0, "proj": 31.0, "sd": 0.0, "day": "MON", "opp": "MEM", "src": "actual"}, {"slot": "PF", "name": "Paul Reed", "short": "Reed", "lock": 27.8, "proj": 23.4, "sd": 8.8, "day": "FRI", "opp": "BKN", "src": "sleeper"}, {"slot": "C", "name": "Jabari Smith Jr.", "short": "Jr.", "lock": 32.0, "proj": 32.0, "sd": 0.0, "day": "MON", "opp": "ATL", "src": "actual"}, {"slot": "G", "name": "Cooper Flagg", "short": "Flagg", "lock": 46.5, "proj": 46.5, "sd": 0.0, "day": "MON", "opp": "MIA", "src": "actual"}, {"slot": "F", "name": "Josh Hart", "short": "Hart", "lock": 27.6, "proj": 23.7, "sd": 7.8, "day": "WED", "opp": "CHI", "src": "sleeper"}, {"slot": "UTIL", "name": "Precious Achiuwa", "short": "Achiuwa", "lock": 26.4, "proj": 21.8, "sd": 9.2, "day": "THU", "opp": "NOP", "src": "sleeper"}, {"slot": "UTIL", "name": "P.J. Washington", "short": "Washington", "lock": 26.0, "proj": 26.0, "sd": 0.0, "day": "MON", "opp": "MIA", "src": "actual"}], "rows": [{"name": "James Harden", "short": "Harden", "team": "CLE", "pos": "PG", "status": "active", "note": "", "out": false, "sd": 8.5, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 26.0, "opp": "MIN", "away": false, "src": "actual", "val": 26.0, "best": false}, {"iso": "2026-10-28", "day": "WED", "pts": 23.8, "opp": "WAS", "away": false, "src": "sleeper", "val": 28.07, "best": true}, {"iso": "2026-10-29", "day": "THU", "pts": 22.8, "opp": "ATL", "away": false, "src": "sleeper", "val": 27.01, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 23.8, "opp": "MIL", "away": false, "src": "sleeper", "val": 28.01, "best": false}], "noproj": false, "model": false, "slot": "PG", "lock": 28.1, "best_pts": 23.8, "best_src": "sleeper"}, {"name": "Jaylen Brown", "short": "Brown", "team": "PHI", "pos": "PF/SF/SG", "status": "active", "note": "", "out": false, "sd": 7.5, "games": [{"iso": "2026-10-28", "day": "WED", "pts": 25.1, "opp": "IND", "away": false, "src": "sleeper", "val": 28.86, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 23.7, "opp": "NYK", "away": false, "src": "sleeper", "val": 27.51, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 23.0, "opp": "CHA", "away": false, "src": "sleeper", "val": 26.73, "best": false}], "noproj": false, "model": false, "slot": "SG", "lock": 28.9, "best_pts": 25.1, "best_src": "sleeper"}, {"name": "Ace Bailey", "short": "Bailey", "team": "UTA", "pos": "PF/SF", "status": "active", "note": "", "out": false, "sd": 6.3, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 31.0, "opp": "MEM", "away": false, "src": "actual", "val": 31.0, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 17.6, "opp": "SAS", "away": false, "src": "sleeper", "val": 20.72, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 15.2, "opp": "POR", "away": false, "src": "sleeper", "val": 18.39, "best": false}], "noproj": false, "model": false, "slot": "SF", "lock": 31.0, "best_pts": 31.0, "best_src": "actual"}, {"name": "Paul Reed", "short": "Reed", "team": "DET", "pos": "C/PF", "status": "active", "note": "", "out": false, "sd": 8.8, "games": [{"iso": "2026-10-27", "day": "TUE", "pts": 27.5, "opp": "NYK", "away": false, "src": "actual", "val": 27.5, "best": false}, {"iso": "2026-10-28", "day": "WED", "pts": 22.0, "opp": "CHA", "away": false, "src": "sleeper", "val": 26.4, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 23.4, "opp": "BKN", "away": false, "src": "sleeper", "val": 27.78, "best": true}], "noproj": false, "model": false, "slot": "PF", "lock": 27.8, "best_pts": 23.4, "best_src": "sleeper"}, {"name": "Jabari Smith Jr.", "short": "Jr.", "team": "HOU", "pos": "C/PF", "status": "active", "note": "", "out": false, "sd": 5.8, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 32.0, "opp": "ATL", "away": false, "src": "actual", "val": 32.0, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 21.7, "opp": "MIL", "away": false, "src": "sleeper", "val": 24.64, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 18.1, "opp": "DAL", "away": false, "src": "sleeper", "val": 21.0, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 16.4, "opp": "OKC", "away": false, "src": "sleeper", "val": 19.32, "best": false}], "noproj": false, "model": false, "slot": "C", "lock": 32.0, "best_pts": 32.0, "best_src": "actual"}, {"name": "Cooper Flagg", "short": "Flagg", "team": "DAL", "pos": "PG/SF/SG", "status": "active", "note": "Shoulder, questionable", "out": false, "sd": 9.0, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 46.5, "opp": "MIA", "away": false, "src": "actual", "val": 46.5, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 25.9, "opp": "OKC", "away": false, "src": "sleeper", "val": 30.39, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 23.9, "opp": "HOU", "away": false, "src": "sleeper", "val": 28.47, "best": false}], "noproj": false, "model": false, "slot": "G", "lock": 46.5, "best_pts": 46.5, "best_src": "actual"}, {"name": "Josh Hart", "short": "Hart", "team": "NYK", "pos": "SF/SG", "status": "active", "note": "", "out": false, "sd": 7.8, "games": [{"iso": "2026-10-27", "day": "TUE", "pts": 19.0, "opp": "DET", "away": false, "src": "actual", "val": 19.0, "best": false}, {"iso": "2026-10-28", "day": "WED", "pts": 23.7, "opp": "CHI", "away": false, "src": "sleeper", "val": 27.59, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 23.1, "opp": "PHI", "away": false, "src": "sleeper", "val": 27.04, "best": false}], "noproj": false, "model": false, "slot": "F", "lock": 27.6, "best_pts": 23.7, "best_src": "sleeper"}, {"name": "Precious Achiuwa", "short": "Achiuwa", "team": "SAC", "pos": "C/PF", "status": "active", "note": "", "out": false, "sd": 9.2, "games": [{"iso": "2026-10-27", "day": "TUE", "pts": 3.0, "opp": "SAS", "away": false, "src": "actual", "val": 3.0, "best": false}, {"iso": "2026-10-29", "day": "THU", "pts": 21.8, "opp": "NOP", "away": false, "src": "sleeper", "val": 26.39, "best": true}, {"iso": "2026-10-31", "day": "SAT", "pts": 21.7, "opp": "MEM", "away": false, "src": "sleeper", "val": 26.32, "best": false}], "noproj": false, "model": false, "slot": "UTIL", "lock": 26.4, "best_pts": 21.8, "best_src": "sleeper"}, {"name": "P.J. Washington", "short": "Washington", "team": "DAL", "pos": "C/PF/SF", "status": "active", "note": "", "out": false, "sd": 7.2, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 26.0, "opp": "MIA", "away": false, "src": "actual", "val": 26.0, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 20.7, "opp": "OKC", "away": false, "src": "sleeper", "val": 24.27, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 19.4, "opp": "HOU", "away": false, "src": "sleeper", "val": 23.02, "best": false}], "noproj": false, "model": false, "slot": "UTIL", "lock": 26.0, "best_pts": 26.0, "best_src": "actual"}, {"name": "Desmond Bane", "short": "Bane", "team": "ORL", "pos": "PG/SG", "status": "active", "note": "", "out": false, "sd": 6.5, "games": [{"iso": "2026-10-28", "day": "WED", "pts": 21.5, "opp": "TOR", "away": false, "src": "sleeper", "val": 24.76, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 21.5, "opp": "TOR", "away": false, "src": "sleeper", "val": 24.71, "best": false}, {"iso": "2026-11-01", "day": "SUN", "pts": 19.0, "opp": "BOS", "away": false, "src": "sleeper", "val": 22.23, "best": false}], "noproj": false, "model": false, "slot": "BN", "lock": 24.8, "best_pts": 21.5, "best_src": "sleeper"}, {"name": "Jonathan Kuminga", "short": "Kuminga", "team": "MIN", "pos": "PF", "status": "active", "note": "", "out": false, "sd": 6.3, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 23.0, "opp": "CLE", "away": false, "src": "actual", "val": 23.0, "best": true}, {"iso": "2026-10-28", "day": "WED", "pts": 18.9, "opp": "GSW", "away": false, "src": "sleeper", "val": 22.04, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 18.6, "opp": "LAC", "away": false, "src": "sleeper", "val": 21.78, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 18.4, "opp": "SAS", "away": false, "src": "sleeper", "val": 21.51, "best": false}], "noproj": false, "model": false, "slot": "BN", "lock": 23.0, "best_pts": 23.0, "best_src": "actual"}, {"name": "Immanuel Quickley", "short": "Quickley", "team": "TOR", "pos": "PG/SG", "status": "active", "note": "", "out": false, "sd": 6.3, "games": [{"iso": "2026-10-28", "day": "WED", "pts": 19.2, "opp": "ORL", "away": false, "src": "sleeper", "val": 22.37, "best": false}, {"iso": "2026-10-30", "day": "FRI", "pts": 19.5, "opp": "ORL", "away": false, "src": "sleeper", "val": 22.59, "best": true}, {"iso": "2026-11-01", "day": "SUN", "pts": 18.0, "opp": "LAL", "away": false, "src": "sleeper", "val": 21.12, "best": false}], "noproj": false, "model": false, "slot": "BN", "lock": 22.6, "best_pts": 19.5, "best_src": "sleeper"}, {"name": "AJ Dybantsa", "short": "Dybantsa", "team": "WAS", "pos": "PF/SF", "status": "GTD", "note": "GTD (Sleeper)", "out": false, "sd": 6.3, "games": [{"iso": "2026-10-28", "day": "WED", "pts": 12.9, "opp": "CLE", "away": false, "src": "sleeper", "val": 16.09, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 10.3, "opp": "CHA", "away": false, "src": "sleeper", "val": 13.47, "best": false}], "noproj": false, "model": false, "slot": "BN", "lock": 16.1, "best_pts": 12.9, "best_src": "sleeper"}, {"name": "Alperen Şengün", "short": "Şengün", "team": "HOU", "pos": "C/PF", "status": "GTD", "note": "Out (Sleeper)", "out": true, "sd": 10.4, "games": [{"iso": "2026-10-26", "day": "MON", "pts": 41.0, "opp": "ATL", "away": false, "src": "actual", "val": 41.0, "best": true}, {"iso": "2026-10-30", "day": "FRI", "pts": 30.8, "opp": "DAL", "away": false, "src": "sleeper", "val": 36.02, "best": false}, {"iso": "2026-10-31", "day": "SAT", "pts": 27.6, "opp": "OKC", "away": false, "src": "sleeper", "val": 32.8, "best": false}], "noproj": false, "model": false, "slot": "OUT", "lock": 41.0, "best_pts": 41.0, "best_src": "actual"}, {"name": "Jalen Duren", "short": "Duren", "team": "DET", "pos": "C", "status": "IR", "note": "On my IR slot (Out)", "out": true, "sd": 8.7, "games": [], "noproj": false, "model": false, "slot": "OUT", "lock": null, "best_pts": null, "best_src": null}], "gpt": {"4": ["ATL", "BOS", "CHA", "CLE", "GSW", "HOU", "IND", "LAL", "MIN"], "3": ["BKN", "CHI", "DAL", "DEN", "DET", "LAC", "MEM", "MIA", "MIL", "NOP", "NYK", "OKC", "ORL", "PHI", "POR", "SAC", "SAS", "TOR", "UTA", "WAS"], "2": ["PHX"]}, "mine": ["CLE", "DAL", "DET", "HOU", "MIN", "NYK", "ORL", "PHI", "SAC", "TOR", "UTA", "WAS"], "planner": {"tip_file_ok": true, "tip_file_age_h": 4.2, "today_iso": "2026-10-28", "settings": {"bust_pct": 0.6, "near_tie_pts": 1.5, "minutes_full_game": 140.0}, "tip_times": {"2026-10-26": [{"home": "CHA", "away": "WAS", "tip_utc": "2026-10-26T23:00Z", "tip_ts": 1793055600}, {"home": "CLE", "away": "MIN", "tip_utc": "2026-10-26T23:00Z", "tip_ts": 1793055600}, {"home": "BOS", "away": "CHI", "tip_utc": "2026-10-26T23:30Z", "tip_ts": 1793057400}, {"home": "MIA", "away": "DAL", "tip_utc": "2026-10-26T23:30Z", "tip_ts": 1793057400}, {"home": "MIL", "away": "IND", "tip_utc": "2026-10-27T00:00Z", "tip_ts": 1793059200}, {"home": "OKC", "away": "PHX", "tip_utc": "2026-10-27T00:00Z", "tip_ts": 1793059200}, {"home": "HOU", "away": "ATL", "tip_utc": "2026-10-27T00:30Z", "tip_ts": 1793061000}, {"home": "UTA", "away": "MEM", "tip_utc": "2026-10-27T01:00Z", "tip_ts": 1793062800}, {"home": "DEN", "away": "GSW", "tip_utc": "2026-10-27T02:00Z", "tip_ts": 1793066400}], "2026-10-27": [{"home": "BOS", "away": "BKN", "tip_utc": "2026-10-27T23:30Z", "tip_ts": 1793143800}, {"home": "NYK", "away": "DET", "tip_utc": "2026-10-28T00:00Z", "tip_ts": 1793145600}, {"home": "SAS", "away": "SAC", "tip_utc": "2026-10-28T00:00Z", "tip_ts": 1793145600}, {"home": "LAL", "away": "POR", "tip_utc": "2026-10-28T03:00Z", "tip_ts": 1793156400}], "2026-10-28": [{"home": "ATL", "away": "MIA", "tip_utc": "2026-10-28T23:00Z", "tip_ts": 1793228400}, {"home": "CLE", "away": "WAS", "tip_utc": "2026-10-28T23:00Z", "tip_ts": 1793228400}, {"home": "DET", "away": "CHA", "tip_utc": "2026-10-28T23:00Z", "tip_ts": 1793228400}, {"home": "IND", "away": "PHI", "tip_utc": "2026-10-28T23:00Z", "tip_ts": 1793228400}, {"home": "TOR", "away": "ORL", "tip_utc": "2026-10-28T23:30Z", "tip_ts": 1793230200}, {"home": "CHI", "away": "NYK", "tip_utc": "2026-10-29T00:00Z", "tip_ts": 1793232000}, {"home": "MIL", "away": "HOU", "tip_utc": "2026-10-29T00:00Z", "tip_ts": 1793232000}, {"home": "MIN", "away": "GSW", "tip_utc": "2026-10-29T00:00Z", "tip_ts": 1793232000}, {"home": "NOP", "away": "DEN", "tip_utc": "2026-10-29T00:00Z", "tip_ts": 1793232000}, {"home": "UTA", "away": "SAS", "tip_utc": "2026-10-29T01:00Z", "tip_ts": 1793235600}, {"home": "DAL", "away": "OKC", "tip_utc": "2026-10-29T01:30Z", "tip_ts": 1793237400}, {"home": "LAC", "away": "LAL", "tip_utc": "2026-10-29T02:30Z", "tip_ts": 1793241000}], "2026-10-29": [{"home": "ATL", "away": "CLE", "tip_utc": "2026-10-30T00:00Z", "tip_ts": 1793318400}, {"home": "NOP", "away": "SAC", "tip_utc": "2026-10-30T00:00Z", "tip_ts": 1793318400}, {"home": "POR", "away": "MEM", "tip_utc": "2026-10-30T02:00Z", "tip_ts": 1793325600}], "2026-10-30": [{"home": "WAS", "away": "CHA", "tip_utc": "2026-10-30T23:00Z", "tip_ts": 1793401200}, {"home": "BOS", "away": "CHI", "tip_utc": "2026-10-30T23:30Z", "tip_ts": 1793403000}, {"home": "BKN", "away": "DET", "tip_utc": "2026-10-30T23:30Z", "tip_ts": 1793403000}, {"home": "PHI", "away": "NYK", "tip_utc": "2026-10-30T23:30Z", "tip_ts": 1793403000}, {"home": "TOR", "away": "ORL", "tip_utc": "2026-10-30T23:30Z", "tip_ts": 1793403000}, {"home": "MIA", "away": "IND", "tip_utc": "2026-10-31T00:00Z", "tip_ts": 1793404800}, {"home": "DAL", "away": "HOU", "tip_utc": "2026-10-31T00:00Z", "tip_ts": 1793404800}, {"home": "MIN", "away": "LAC", "tip_utc": "2026-10-31T00:00Z", "tip_ts": 1793404800}, {"home": "GSW", "away": "LAL", "tip_utc": "2026-10-31T02:00Z", "tip_ts": 1793412000}, {"home": "PHX", "away": "DEN", "tip_utc": "2026-10-31T02:00Z", "tip_ts": 1793412000}], "2026-10-31": [{"home": "UTA", "away": "POR", "tip_utc": "2026-10-31T19:00Z", "tip_ts": 1793473200}, {"home": "CHA", "away": "PHI", "tip_utc": "2026-10-31T22:00Z", "tip_ts": 1793484000}, {"home": "NOP", "away": "ATL", "tip_utc": "2026-10-31T23:00Z", "tip_ts": 1793487600}, {"home": "MEM", "away": "SAC", "tip_utc": "2026-11-01T00:00Z", "tip_ts": 1793491200}, {"home": "MIL", "away": "CLE", "tip_utc": "2026-11-01T00:00Z", "tip_ts": 1793491200}, {"home": "SAS", "away": "MIN", "tip_utc": "2026-11-01T00:00Z", "tip_ts": 1793491200}, {"home": "HOU", "away": "OKC", "tip_utc": "2026-11-01T00:30Z", "tip_ts": 1793493000}], "2026-11-01": [{"home": "ORL", "away": "BOS", "tip_utc": "2026-11-01T20:30Z", "tip_ts": 1793565000}, {"home": "IND", "away": "BKN", "tip_utc": "2026-11-01T22:00Z", "tip_ts": 1793570400}, {"home": "GSW", "away": "LAC", "tip_utc": "2026-11-02T01:30Z", "tip_ts": 1793583000}, {"home": "LAL", "away": "TOR", "tip_utc": "2026-11-02T02:00Z", "tip_ts": 1793584800}]}}};
 /*DATA_END*/
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
@@ -191,6 +301,251 @@ function render(){
   <p class="hint">Projection source: ${esc(D.meta.source)}${D.meta.projFetched?', fetched '+esc(D.meta.projFetched):''}.</p></details>`;
 }
 render();
+(function plannerInit(){
+  var PL=DATA.planner,el=document.getElementById('planner-card');
+  if(!PL||!el)return;
+  el.hidden=false;
+  var SLOTS=DATA.meta.slots,todayIso=PL.today_iso;
+
+  // --- localStorage helpers ---
+  var LK=function(i){return 'qrLock_'+DATA.meta.league+'_'+DATA.week.label+'_'+i;};
+  var BK=function(n){return 'qrBust_'+DATA.meta.league+'_'+DATA.week.label+'_'+n;};
+  function getLock(i){try{return localStorage.getItem(LK(i))==='1';}catch(e){return false;}}
+  function setLock(i,v){try{localStorage.setItem(LK(i),v?'1':'0');}catch(e){}}
+  function getBust(n,proj){try{var v=localStorage.getItem(BK(n));if(v!==null)return+v;}catch(e){}return+((proj*(PL.settings.bust_pct||0.6)).toFixed(1));}
+  function setBust(n,v){try{localStorage.setItem(BK(n),(+v).toFixed(1));}catch(e){}}
+
+  // --- time formatting ---
+  function fmtTime(utc){
+    if(!utc)return'';
+    try{var d=new Date(utc),h=d.getHours()%12||12,m=d.getMinutes();
+      return h+':'+(m<10?'0':'')+m+' '+(d.getHours()>=12?'PM':'AM');}
+    catch(e){return utc;}
+  }
+
+  // --- Slot eligibility (mirrors qr_common.py) ---
+  var SLOT_RULE={PG:['PG'],SG:['SG'],SF:['SF'],PF:['PF'],C:['C'],G:['PG','SG'],F:['SF','PF'],UTIL:['PG','SG','SF','PF','C']};
+  function parsePos(s){
+    if(!s)return[];
+    var t=(Array.isArray(s)?s.join('/'):String(s)).toUpperCase();
+    var out=[];
+    (t.match(/PG|SG|SF|PF|C/g)||[]).forEach(function(p){if(out.indexOf(p)<0)out.push(p);});
+    var rest=t.replace(/PG|SG|SF|PF|C/g,'');
+    if(rest.indexOf('G')>-1){['PG','SG'].forEach(function(p){if(out.indexOf(p)<0)out.push(p);});}
+    if(rest.indexOf('F')>-1){['SF','PF'].forEach(function(p){if(out.indexOf(p)<0)out.push(p);});}
+    return out;
+  }
+  function slotOk(slot,posArr){
+    if(slot==='UTIL')return true;
+    var rule=SLOT_RULE[slot];if(!rule)return false;
+    return posArr.some(function(p){return rule.indexOf(p)>-1;});
+  }
+
+  // --- Hungarian algorithm (port of qr_common.py) ---
+  function hungarian(cost){
+    var n=cost.length,m=cost[0].length,INF=1e15;
+    var u=[],v=[],p=[],way=[];
+    for(var i=0;i<=n;i++)u.push(0);
+    for(var j=0;j<=m;j++){v.push(0);p.push(0);way.push(0);}
+    for(var i=1;i<=n;i++){
+      p[0]=i;var j0=0,minv=[],used=[];
+      for(var j=0;j<=m;j++){minv.push(INF);used.push(false);}
+      do{
+        used[j0]=true;var i0=p[j0],delta=INF,j1=0;
+        for(var j=1;j<=m;j++){if(!used[j]){var cur=cost[i0-1][j-1]-u[i0]-v[j];if(cur<minv[j]){minv[j]=cur;way[j]=j0;}if(minv[j]<delta){delta=minv[j];j1=j;}}}
+        for(var j=0;j<=m;j++){if(used[j]){u[p[j]]+=delta;v[j]-=delta;}else minv[j]-=delta;}
+        j0=j1;
+      }while(p[j0]!==0);
+      do{var j1=way[j0];p[j0]=p[j1];j0=j1;}while(j0!==0);
+    }
+    var assign=[];for(var i=0;i<n;i++)assign.push(-1);
+    for(var j=1;j<=m;j++)if(p[j])assign[p[j]-1]=j-1;
+    return assign;
+  }
+
+  // --- Plan computation ---
+  function computePlan(dayIso){
+    var tipGames=(PL.tip_times||{})[dayIso]||[];
+    var byTeam={};
+    tipGames.forEach(function(g){byTeam[g.home]=g;byTeam[g.away]=g;});
+    var isToday=dayIso===todayIso;
+
+    var lockedMap={};
+    if(isToday){SLOTS.forEach(function(sl,i){if(getLock(i)){var ex=(DATA.slots||[])[i];if(ex&&ex.name)lockedMap[i]=ex.name;}});}
+    var lockedNames={};Object.keys(lockedMap).forEach(function(i){lockedNames[lockedMap[i]]=true;});
+
+    var active=[];
+    (DATA.rows||[]).forEach(function(r){
+      if(r.out)return;
+      var dg=(r.games||[]).filter(function(g){return g.iso===dayIso&&g.pts!=null;})[0];
+      if(!dg)return;
+      var tg=byTeam[r.team];if(!tg)return;
+      active.push({name:r.name,pos:r.pos,posArr:parsePos(r.pos),team:r.team,proj:dg.pts,src:dg.src,tip_utc:tg.tip_utc,tip_ts:tg.tip_ts});
+    });
+    active.sort(function(a,b){return a.tip_ts-b.tip_ts;});
+
+    var freeIdx=[],freeNames=[];
+    SLOTS.forEach(function(sl,i){if(!lockedMap.hasOwnProperty(i)){freeIdx.push(i);freeNames.push(sl);}});
+    var pool=active.filter(function(p){return!lockedNames[p.name];});
+
+    var startersBySlot={};
+    if(pool.length>0&&freeNames.length>0){
+      var tsVals=pool.map(function(p){return p.tip_ts;}),tsMin=Math.min.apply(null,tsVals),tsRange=Math.max(Math.max.apply(null,tsVals)-tsMin,1);
+      var near_tie=PL.settings.near_tie_pts||1.5,BIG=1e6;
+      var nFree=freeNames.length,nPool=pool.length,nDummy=Math.max(0,nFree-nPool);
+      var ext=pool.concat(Array(nDummy).fill(null));
+      var cost=freeNames.map(function(slot){return ext.map(function(p){
+        if(!p)return BIG;
+        if(!slotOk(slot,p.posArr))return BIG;
+        return-(p.proj+near_tie*(1-(p.tip_ts-tsMin)/tsRange)*0.001);
+      });});
+      var assign=hungarian(cost);
+      assign.forEach(function(pi,fi){if(pi>=0&&pi<nPool&&cost[fi][pi]<BIG)startersBySlot[freeIdx[fi]]=pool[pi].name;});
+    }
+
+    var startersSet={};Object.keys(startersBySlot).forEach(function(i){startersSet[startersBySlot[i]]=true;});
+    var byName={};active.forEach(function(p){byName[p.name]=p;});
+    var bust_pct=PL.settings.bust_pct||0.6,mins_full=PL.settings.minutes_full_game||140;
+
+    var planSlots=SLOTS.map(function(slot,i){
+      if(lockedMap.hasOwnProperty(i))return{slot_idx:i,slot:slot,locked:true,name:lockedMap[i],fallbacks:[]};
+      var name=startersBySlot[i];
+      if(!name)return{slot_idx:i,slot:slot,locked:false,empty:true,name:null,fallbacks:[]};
+      var p=byName[name],proj=p.proj;
+      var bustTrigger=isToday?getBust(name,proj):+(proj*bust_pct).toFixed(1);
+      var fallbacks=[];
+      active.forEach(function(bench){
+        if(bench.name===name||startersSet[bench.name]||lockedNames[bench.name])return;
+        if(!slotOk(slot,bench.posArr))return;
+        if(bench.tip_ts<=p.tip_ts)return;
+        var dm=(bench.tip_ts-p.tip_ts)/60,ps=dm<mins_full;
+        var eff=ps?+(bustTrigger*(dm/mins_full)).toFixed(1):bustTrigger;
+        var ls=name.split(' ').pop(),lb=bench.name.split(' ').pop();
+        fallbacks.push({name:bench.name,proj:+bench.proj.toFixed(1),tip_utc:bench.tip_utc,tip_ts:bench.tip_ts,
+                        effective_trigger:eff,pace_scaled:ps,conflict:false,
+                        instruction:'If '+ls+' has < '+eff+' pts when '+lb+' tips, swap.'});
+      });
+      fallbacks.sort(function(a,b){return a.tip_ts-b.tip_ts;});
+      return{slot_idx:i,slot:slot,locked:false,empty:false,name:name,proj:+proj.toFixed(1),
+             bust_trigger:bustTrigger,tip_utc:p.tip_utc,tip_ts:p.tip_ts,fallbacks:fallbacks};
+    });
+
+    var fbUsage={};
+    planSlots.forEach(function(ps){(ps.fallbacks||[]).forEach(function(fb){(fbUsage[fb.name]||(fbUsage[fb.name]=[])).push(ps.slot);});});
+    var conflicts={};Object.keys(fbUsage).forEach(function(n){if(fbUsage[n].length>1)conflicts[n]=fbUsage[n];});
+    planSlots.forEach(function(ps){(ps.fallbacks||[]).forEach(function(fb){if(conflicts[fb.name])fb.conflict=true;});});
+
+    var timeline=[];
+    planSlots.forEach(function(ps){
+      if(ps.locked||ps.empty||!ps.name)return;
+      timeline.push({type:'starter_tip',player:ps.name,slot:ps.slot,tip_utc:ps.tip_utc,tip_ts:ps.tip_ts});
+      (ps.fallbacks||[]).forEach(function(fb){timeline.push({type:'deadline',fallback:fb.name,for_slot:ps.slot,for_player:ps.name,
+        tip_utc:fb.tip_utc,tip_ts:fb.tip_ts,eff:fb.effective_trigger,pace_scaled:fb.pace_scaled,instruction:fb.instruction});});
+    });
+    timeline.sort(function(a,b){return a.tip_ts-b.tip_ts;});
+    return{slots:planSlots,conflicts:conflicts,timeline:timeline};
+  }
+
+  // --- Rendering ---
+  var activeDayIso=todayIso||((DATA.week.days[0]||{}).iso);
+
+  function renderPlan(){
+    var bodyEl=document.getElementById('plan-body'),tlEl=document.getElementById('plan-timeline');
+    if(!bodyEl||!tlEl)return;
+    var plan=computePlan(activeDayIso),isToday=activeDayIso===todayIso;
+    var warnEl=document.getElementById('planner-warn');
+    if(warnEl){
+      if(!PL.tip_file_ok){
+        warnEl.hidden=false;
+        warnEl.textContent='Tip times are '+(PL.tip_file_age_h!=null?PL.tip_file_age_h.toFixed(0)+' h old':'missing')+'. Run pull_schedule.py to refresh. Times shown are unreliable.';
+      } else warnEl.hidden=true;
+    }
+
+    var filled=plan.slots.filter(function(ps){return!ps.empty&&ps.name;});
+    if(!filled.length){bodyEl.innerHTML='<p style="color:var(--muted);font-size:13px;margin:8px 0">No roster players with Sleeper projections and tip times found for this day.</p>';tlEl.innerHTML='';return;}
+
+    var hd='<div class="ps-hd"><div></div><div>Player</div><div class="ti-h">Tip</div><div>Proj</div>'+(isToday?'<div>Bust</div><div></div>':'')+'</div>';
+    var rows='';
+    plan.slots.forEach(function(ps){
+      if(ps.empty){rows+='<div class="ps"><div class="lb">'+esc(ps.slot)+'</div><div class="pn" style="color:var(--muted);font-weight:500">—</div><div></div><div></div>'+(isToday?'<div></div><div></div>':'')+'</div>';return;}
+      if(ps.locked){rows+='<div class="ps"><div class="lb">'+esc(ps.slot)+'</div><div class="pn">'+esc(ps.name)+'</div><div class="ti"></div><div class="pj">—</div>'+(isToday?'<div></div><div><button class="lk-btn on" data-slot="'+ps.slot_idx+'" aria-label="Unlock slot '+esc(ps.slot)+'">LOCK</button></div>':'')+'</div>';return;}
+      var ts=ps.tip_utc?fmtTime(ps.tip_utc):'';
+      rows+='<div class="ps"><div class="lb">'+esc(ps.slot)+'</div><div class="pn">'+esc(ps.name)+'</div><div class="ti">'+esc(ts)+'</div><div class="pj">'+f1(ps.proj)+'</div>'
+        +(isToday?'<div class="bt-wrap"><input class="bt-in" type="number" step="0.5" min="0" max="99" data-name="'+esc(ps.name)+'" data-proj="'+ps.proj+'" value="'+ps.bust_trigger+'" aria-label="Bust trigger for '+esc(ps.name)+'"><span>pts</span></div>'
+          +'<div><button class="lk-btn" data-slot="'+ps.slot_idx+'" aria-label="Lock slot '+esc(ps.slot)+'">LOCK</button></div>':'')+'</div>';
+      if(isToday&&ps.fallbacks.length){
+        rows+='<div class="fb-block">';
+        ps.fallbacks.forEach(function(fb){
+          rows+='<div class="fb-row'+(fb.conflict?' conflict-fb':'')+'"><span class="fb-arr">↳</span><div class="fb-body">'
+            +'<span class="fb-instr">'+esc(fb.instruction)+(fb.pace_scaled?' <span style="color:var(--muted);font-weight:500;font-size:11px">(pace-scaled)</span>':'')+'</span>'
+            +'<span class="fb-meta">'+esc(fb.name)+' &middot; '+esc(fmtTime(fb.tip_utc))+' &middot; proj '+f1(fb.proj)+(fb.conflict?' &middot; <span style="color:var(--red)">&#9888; shared fallback</span>':'')+'</span>'
+            +'</div></div>';
+        });
+        rows+='</div>';
+      }
+    });
+    bodyEl.innerHTML=hd+rows;
+
+    Object.keys(plan.conflicts).forEach(function(nm){
+      bodyEl.innerHTML+='<div class="conf-banner">&#9888; <strong>'+esc(nm)+'</strong> is the top fallback for multiple slots ('+plan.conflicts[nm].map(esc).join(', ')+').</div>';
+    });
+
+    if(isToday&&plan.timeline.length){
+      var tl='<div class="tl-wrap"><p class="cap">Today’s decision timeline</p>';
+      plan.timeline.forEach(function(ev){
+        var t=fmtTime(ev.tip_utc),isTip=ev.type==='starter_tip';
+        tl+='<div class="tl-row'+(isTip?' tip-evt':'')+'"><div class="tl-time">'+esc(t)+'</div><div class="tl-text">'+(isTip?esc(ev.player)+' ('+esc(ev.slot)+') tips':esc(ev.instruction))+'</div></div>';
+      });
+      tl+='</div>';
+      tlEl.innerHTML=tl;
+    } else tlEl.innerHTML='';
+
+    bodyEl.querySelectorAll('.lk-btn').forEach(function(btn){
+      var si=+btn.dataset.slot;
+      if(getLock(si))btn.classList.add('on');
+      btn.addEventListener('click',function(){var now=!getLock(si);setLock(si,now);btn.classList.toggle('on',now);renderPlan();});
+    });
+    bodyEl.querySelectorAll('.bt-in').forEach(function(inp){
+      inp.addEventListener('change',function(){var v=parseFloat(inp.value);if(!isNaN(v)&&v>=0){setBust(inp.dataset.name,v);renderPlan();}});
+    });
+    document.getElementById('plan-day-label').textContent=(activeDayIso===todayIso?'Today · ':'')+activeDayIso;
+  }
+
+  var tabsEl=document.getElementById('plan-tabs');
+  if(tabsEl){
+    tabsEl.innerHTML=DATA.week.days.map(function(d){
+      return'<button class="plan-tab" role="tab" aria-selected="'+(d.iso===activeDayIso?'true':'false')+'" data-iso="'+d.iso+'">'+(d.today?'Today · ':'')+d.key+' '+d.date+'</button>';
+    }).join('');
+    tabsEl.querySelectorAll('.plan-tab').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        activeDayIso=btn.dataset.iso;
+        tabsEl.querySelectorAll('.plan-tab').forEach(function(b){b.setAttribute('aria-selected',b.dataset.iso===activeDayIso?'true':'false');});
+        renderPlan();
+      });
+    });
+  }
+  renderPlan();
+})();
+(function(){
+  var f=location.protocol==='file:';
+  var u={roster:f?'roster_quickref.html':'index.html',fa:f?'free_agents.html':'free-agents.html',r260:f?'road_to_260.html':'road-to-260.html'};
+  var t=document.title;
+  var cur=t.indexOf('Free Agent')>-1?'fa':t.indexOf('260')>-1?'r260':'roster';
+  ['roster','fa','r260'].forEach(function(k){
+    var d=document.getElementById('nav-'+k),m=document.getElementById('nav-'+k+'-m');
+    if(d){d.href=u[k];if(k===cur)d.setAttribute('aria-current','page');}
+    if(m){m.href=u[k];if(k===cur)m.setAttribute('aria-current','page');}
+  });
+  var KEY='qrNavOpen',rail=document.getElementById('qrnav-rail'),btn=document.getElementById('qrnav-toggle');
+  var open=false;try{open=localStorage.getItem(KEY)==='1';}catch(e){}
+  function apply(){
+    rail.classList.toggle('open',open);
+    btn.setAttribute('aria-expanded',open?'true':'false');
+    btn.setAttribute('aria-label',open?'Collapse navigation':'Expand navigation');
+  }
+  apply();
+  btn.addEventListener('click',function(){open=!open;try{localStorage.setItem(KEY,open?'1':'0');}catch(e){}apply();});
+})();
 </script>
 </body>
 </html>
