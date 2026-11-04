@@ -12,8 +12,16 @@
   --curve:#4DA1FF; --curve-fill:rgba(77,161,255,.18); --lock:#30D158; --lock-fill:rgba(48,209,88,.22);
   --ceil:#FF9F0A; --hist:rgba(239,244,253,.14); --chip:#1A2640;
   --core:#30D158; --solid:#4DA1FF; --watch:#FF9F0A; --drop:#FF453A; --ir:#7A91AE;
-  --yellow:#FFD60A; --s2:#1A2640; --s3:#20304E;
+  --yellow:#FFD60A; --s2:#1A2640; --s3:#20304E; --nav-bg:rgba(8,12,20,.88);
 }
+[data-theme="light"]{
+  --bg:#F7F9FC; --surface:#FFFFFF; --ink:#0D1117; --muted:#5A6A7E;
+  --line:rgba(0,0,0,.1); --chip:#EDF1F7;
+  --hist:rgba(0,0,0,.08); --curve-fill:rgba(77,161,255,.15); --lock-fill:rgba(48,209,88,.15);
+  --s2:#EDF1F7; --s3:#E1E8F0; --nav-bg:rgba(247,249,252,.92);
+}
+.theme-btn{background:none;border:1px solid var(--line);border-radius:999px;color:var(--muted);cursor:pointer;font-size:14px;padding:3px 10px;line-height:1;font-family:inherit}
+.theme-btn:hover{color:var(--ink)}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
@@ -99,7 +107,7 @@ ol.watch li{margin:7px 0;max-width:84ch;font-size:14.5px}
 .navlink:hover{color:var(--ink)}
 .navlink.active{color:var(--yellow,#FFD60A);font-weight:600}
 .navlink:active{transform:scale(0.97)}
-.sitenav{display:flex;align-items:center;flex-wrap:wrap;gap:4px 20px;margin:0 0 16px;padding:10px 18px;background:rgba(8,12,20,.88);backdrop-filter:blur(20px) saturate(180%);border:1px solid var(--line);border-radius:14px;position:sticky;top:8px;z-index:10}
+.sitenav{display:flex;align-items:center;flex-wrap:wrap;gap:4px 20px;margin:0 0 16px;padding:10px 18px;background:var(--nav-bg);backdrop-filter:blur(20px) saturate(180%);border:1px solid var(--line);border-radius:14px;position:sticky;top:8px;z-index:10}
 .sitenav .sep{color:var(--line);font-size:12px;user-select:none}
 .sitenav .brand{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
 .sitenav .page-ind{font-size:13px;font-weight:600;color:var(--yellow,#FFD60A)}
@@ -170,6 +178,7 @@ ol.watch li{margin:7px 0;max-width:84ch;font-size:14.5px}
 @media(min-width:768px){body{padding-left:56px}}
 @media(prefers-reduced-motion:reduce){#qrnav-rail{transition:none}.qrnav-label,.qrnav-item{transition:none}}
 </style>
+<script>(function(){try{var t=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='light';}})()</script>
 </head>
 <body>
 <nav id="qrnav" aria-label="Site navigation">
@@ -214,6 +223,7 @@ ol.watch li{margin:7px 0;max-width:84ch;font-size:14.5px}
     <span class="sep">·</span>
     <span class="page-ind">Free Agents</span>
     <div class="spacer"></div>
+    <button id="themeBtn" class="theme-btn" aria-label="Toggle light/dark theme">🌙</button>
     <a class="navlink" id="back" href="index.html">Roster</a>
     <a class="navlink active" href="#">Free Agents</a>
     <a class="navlink" id="fwd260" href="road-to-260.html">Road to 260</a>
@@ -379,6 +389,7 @@ render();
   apply();
   btn.addEventListener('click',function(){open=!open;try{localStorage.setItem(KEY,open?'1':'0');}catch(e){}apply();});
 })();
+(function(){var tb=document.getElementById('themeBtn');if(!tb)return;function applyT(t){document.documentElement.dataset.theme=t;tb.textContent=t==='dark'?'☀':'🌙';try{localStorage.setItem('theme',t);}catch(e){}}applyT(document.documentElement.dataset.theme||'light');tb.addEventListener('click',function(){applyT(document.documentElement.dataset.theme==='dark'?'light':'dark');});})();
 </script>
 </body>
 </html>
